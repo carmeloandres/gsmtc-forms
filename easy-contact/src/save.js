@@ -25,7 +25,7 @@ import { useBlockProps } from '@wordpress/block-editor';
 export default function save() {
 	return (
 		<p {...useBlockProps.save()}>
-			{__('Gsmtc Forms – hello from the saved content!', 'gsmtc-forms')}
+			{__('Easy Contact – hello from the saved content!', 'easy-contact')}
 		</p>
 	);
 }

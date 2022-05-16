@@ -14,8 +14,9 @@
 		"plugin-zip": "wp-scripts plugin-zip",
 		"start": "wp-scripts start",
 		"build:simple-contact": "wp-scripts build ./simple-contact/src/index.js --output-path=./simple-contact/build",
-		"start:simple-contact": "wp-scripts start ./simple-contact/src/index.js --output-path=./simple-contact/build"
-
+		"start:simple-contact": "wp-scripts start ./simple-contact/src/index.js --output-path=./simple-contact/build",
+		"build:easy-contact": "wp-scripts build ./easy-contact/src/index.js --output-path=./easy-contact/build",
+		"start:easy-contact": "wp-scripts start ./easy-contact/src/index.js --output-path=./easy-contact/build"
 	},
 	"devDependencies": {
 		"@wordpress/scripts": "^22.3.0"

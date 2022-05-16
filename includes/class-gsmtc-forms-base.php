@@ -34,12 +34,14 @@ class Gsmtc_Forms_Base{
      * Method to registerl all endpoints
      */
     public function endpoints(){
-        register_rest_route( 'gsmtc-forms/','simple-contact', array('methods'  => WP_REST_Server::EDITABLE,
-                                'callback' => array($this,'request_simple_contact'),) );
+        register_rest_route( 'gsmtc-forms','simple-contact', array(
+                                'methods'  => WP_REST_Server::EDITABLE,
+                                'callback' => array($this,'request_simple_contact'),
+                                'permission_callback' => true ) );
     }
 
     /**
-     * Method para atender la petici
+     * Method para atender la peticion
      */
     function request_simple_contact($request){ 
         global $wpdb;

@@ -19,6 +19,9 @@ if ( ! defined('CUSTOM_STYLES_DIR')) define ('CUSTOM_STYLES_DIR', ABSPATH . 'wp-
 
 require_once(dirname(__FILE__).'/includes/class-gsmtc-forms-base.php');
 
+//require_once(dirname(__FILE__).'/easy-contact/index.php');
+
+
 $base = new Gsmtc_Forms_Base;
 
 /**
@@ -28,7 +31,25 @@ function gsmtc_forms_activate(){
 	$base = new Gsmtc_Forms_Base();
 	$base->install_gsmtc_forms();
 }
-register_activation_hook(__FILE__,'gsmtc_forms_activate');   
+register_activation_hook(__FILE__,'gsmtc_forms_activate'); 
+
+/**
+ * Filter function to add new categories to block categories
+ */
+function gsmtc_forms_add_block_categories($block_categories){
+		array_push (
+			$block_categories,
+			array(
+				'slug' => 'gsmtc',
+				'title'=> __('Formularios Gesimática','gsmtc-forms'),
+				'icon' => null,
+			)
+		);
+		$block_categories[0]['title'] = 'Mi texto';
+		error_log(var_export($block_categories,true));
+		return $block_categories;
+}
+add_filter('block_categories_all','gsmtc_forms_add_block_categories');
 
 
 /**
@@ -60,6 +81,12 @@ function create_blocks_gsmtc_forms_blocks_init() {
 		'style' => 'simple-contact'
 		) 
 	);
+
+	/**
+	 * Register the easy-contact block using the block api v2
+	 */
+	register_block_type( __DIR__.'/easy-contact');
+
 }
 add_action( 'init', 'create_blocks_gsmtc_forms_blocks_init' );
 

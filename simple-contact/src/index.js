@@ -43,7 +43,7 @@
   */
  registerBlockType('gsmtc-forms/simple-contact', {
      title: "Simple contact",
-     category: "widgets",
+     category: "gsmtc",
      icon: "editor-table",
      attributes:{
 		title:{

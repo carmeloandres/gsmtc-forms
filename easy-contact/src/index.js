@@ -25,7 +25,7 @@ import save from './save';
  *
  * @see https://developer.wordpress.org/block-editor/reference-guides/block-api/block-registration/
  */
-registerBlockType('create-block/gsmtc-forms', {
+registerBlockType('gsmtc-forms/easy-contact', {
 	/**
 	 * @see ./edit.js
 	 */
