@@ -48,7 +48,7 @@
      attributes:{
 		title:{
 			source: "html",
-			selector: "h1",
+			selector: "h2",
 			default: "Contacto"
 		},
 		nameLabel:{

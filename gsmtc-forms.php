@@ -44,9 +44,7 @@ function gsmtc_forms_add_block_categories($block_categories){
 				'title'=> __('Formularios Gesimática','gsmtc-forms'),
 				'icon' => null,
 			)
-		);
-		$block_categories[0]['title'] = 'Mi texto';
-		error_log(var_export($block_categories,true));
+			);
 		return $block_categories;
 }
 add_filter('block_categories_all','gsmtc_forms_add_block_categories');
