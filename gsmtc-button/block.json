@@ -1,0 +1,13 @@
+{
+	"$schema": "https://schemas.wp.org/trunk/block.json",
+	"apiVersion": 2,
+	"name": "gsmtc-forms/gsmtc-button",
+	"version": "0.1.0",
+	"title": "Form Button",
+	"category": "gsmtc",
+	"icon": "dashicons-button",
+	"textdomain": "gsmtc-forms",
+	"editorScript": "file:./build/index.js",
+	"editorStyle": "file:./build/index.css",
+	"style": "file:./build/style-index.css"
+}

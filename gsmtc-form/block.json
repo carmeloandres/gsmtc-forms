@@ -1,0 +1,23 @@
+{
+	"$schema": "https://schemas.wp.org/trunk/block.json",
+	"apiVersion": 3,
+	"name": "gsmtc-forms/gsmtc-form",
+	"version": "0.1.0",
+	"title": "Form Container",
+	"category": "gsmtc",
+	"icon": "editor-table",
+	"textdomain": "gsmtc-forms",
+	"editorScript": "file:./build/index.js",
+	"editorStyle": "file:./build/index.css",
+	"script":"gsmtc-forms-form-js",
+	"style": "file:./build/style-index.css",
+	"attributes": {
+		"id":{
+			"type":"string",
+			"default":"0"
+		},
+		"name":{
+			"type":"string"
+		}
+	}
+}

@@ -1,0 +1,33 @@
+{
+	"$schema": "https://schemas.wp.org/trunk/block.json",
+	"apiVersion": 2,
+	"name": "gsmtc-forms/gsmtc-textarea",
+	"version": "0.1.0",
+	"title": "Form Textarea",
+	"category": "gsmtc",
+	"icon": "edit",
+	"textdomain": "gsmtc-forms",
+	"editorScript": "file:./build/index.js",
+	"editorStyle": "file:./build/index.css",
+	"style": "file:./build/style-index.css",
+	"attributes": {
+		"cols":{
+			"type":"integer",
+			"default":50
+		},
+		"name":{
+			"type":"string"
+		},
+		"placeholder":{
+			"type":"string"
+		},
+		"required":{
+			"type":"boolean",
+			"default":false
+		},
+		"rows":{
+			"type":"integer",
+			"default":10
+		}
+	}
+}

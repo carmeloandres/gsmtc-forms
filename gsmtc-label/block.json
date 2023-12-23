@@ -1,0 +1,22 @@
+{
+	"$schema": "https://schemas.wp.org/trunk/block.json",
+	"apiVersion": 2,
+	"name": "gsmtc-forms/gsmtc-label",
+	"version": "0.1.0",
+	"title": "Form label",
+	"category": "gsmtc",
+	"icon": "sticky",
+	"textdomain": "gsmtc-forms",
+	"editorScript": "file:./build/index.js",
+	"editorStyle": "file:./build/index.css",
+	"style": "file:./build/style-index.css",
+	"attributes": {
+		"forInput":{
+			"type":"string"
+		},
+		"content":{
+			"type":"string",
+			"default":"label"
+		}
+	}
+}
