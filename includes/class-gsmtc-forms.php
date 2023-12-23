@@ -38,12 +38,14 @@ class Gsmtc_Forms{
     /**
      * Method init
      * 
-     * This method creates the gsmtc-form postype
+     * This method creates the gsmtc-form postype.
+     * Registers the block_pattern 'Gesimatica `pattern'
      * 
      */
 
     function init(){
 
+        // Labels for the custom post type "gsmtc-form"
 		$labels_gsmtc_form = array(
 			'name'               => _x( 'Gsmtc Forms', 'post type general name', 'gsmtc-forms' ),
 			'singular_name'      => _x( 'Gsmtc Form', 'post type singular name', 'gsmtc-forms' ),
@@ -60,7 +62,7 @@ class Gsmtc_Forms{
             'parent_item_colon'  => ''
 		);
 	
-
+        // Regidters the "gsmtc-form" custom post type
 		register_post_type('gsmtc-form',
 			array(
 				'labels'			=> $labels_gsmtc_form,
@@ -72,6 +74,46 @@ class Gsmtc_Forms{
 				'supports'           => array( 'title','editor','custom-fields'),
 			)			
 		);
+
+        // resiter the "Gesimatica forms" block pattern
+        register_block_pattern_category(
+            'gsmtc-forms', // Unique identifier for your category
+            array(
+                'label' => esc_html__('Gesimatica forms', 'gsmtc-forms'), // Category label
+            )
+        );
+
+        $gsmtc_forms = $this->get_all_gsmtc_forms();
+
+        foreach($gsmtc_forms as $form){
+            register_block_pattern( $form->post_title,
+                array(
+                    'title' =>  $form->post_title,
+                    'content' =>  $form->post_content,
+                    'categories' => ['gsmtc-forms'],
+                ));
+        }
+    }
+
+    /**
+     * get_all_gsmtc_forms
+     * 
+     * Function to get all gsmtc-forms
+     *       
+     */
+    function get_all_gsmtc_forms(){
+        global $wpdb;
+
+        $gsmtc_forms = array();
+
+        $tablename = $wpdb->prefix.'posts';
+        $query = "SELECT post_title,post_content FROM ".$tablename." WHERE post_type='gsmtc-form'";
+        $posts_ids = $wpdb->get_results($query);
+
+        if ($posts_ids === NULL)
+            return array();
+
+        return $posts_ids;        
     }
 
     /**

@@ -52,6 +52,7 @@ function gsmtc_forms_add_block_categories($block_categories){
 add_filter('block_categories_all','gsmtc_forms_add_block_categories');
 
 
+
 /**
  * Registers the block using the metadata loaded from the `block.json` file.
  * Behind the scenes, it registers also all assets so they can be enqueued
