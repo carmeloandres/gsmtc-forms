@@ -9,3 +9,5 @@ gsmtc-label/build
 gsmtc-submit/build
 gsmtc-text/build
 gsmtc-textarea/build
+package-lock.json
+

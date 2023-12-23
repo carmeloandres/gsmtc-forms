@@ -37,8 +37,8 @@ export default function Edit({attributes, setAttributes}) {
         				/>
 					     <RangeControl
 							label={__('Cols number','gsmtc-forms')}
-          					value={colss}
-          					onChange={(newValue) => setAttributes({colss: newValue})}
+          					value={cols}
+          					onChange={(newValue) => setAttributes({cols: newValue})}
           					min={1}
           					max={100}
         				/>

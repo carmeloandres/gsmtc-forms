@@ -23,6 +23,7 @@ class Gsmtc_Forms{
 
         $this->nonce_base = NONCE_KEY.date('y-m-d'); // add data to strengthen the nonce
 
+        add_action('init',array($this,'init'));
         // hooking the response function to ajax requests
         add_action( 'wp_ajax_gsmtc_ajax_request', array($this,'ajax_request') );
         add_action( 'wp_ajax_nopriv_gsmtc_ajax_request', array($this,'ajax_request') );
@@ -30,13 +31,61 @@ class Gsmtc_Forms{
         add_action( 'plugins_loaded',array($this,'load_textdomain'));
 //        add_action( 'edit_post',array($this,'edit_post'),10,2);
 //        add_filter( 'wp_insert_post_data',array($this,'wp_insert_post_data'),10,4);
-//        add_filter( 'the_post',array($this,'the_post'),10,2);
         add_action( 'save_post', array($this,'save_post'),10,3);
 
     }
+
+    /**
+     * Method init
+     * 
+     * This method creates the gsmtc-form postype
+     * 
+     */
+
+    function init(){
+
+		$labels_gsmtc_form = array(
+			'name'               => _x( 'Gsmtc Forms', 'post type general name', 'gsmtc-forms' ),
+			'singular_name'      => _x( 'Gsmtc Form', 'post type singular name', 'gsmtc-forms' ),
+			'menu_name'          => _x( 'Gsmtc Formss', 'admin menu', 'gsmtc-forms' ),
+			'add_new'            => _x( 'Add new', 'form', 'gsmtc-forms' ),
+			'add_new_item'       => __( 'Add new form', 'gsmtc-forms' ),
+			'new_item'           => __( 'New form', 'gsmtc-forms' ),
+			'edit_item'          => __( 'Edit form', 'gsmtc-forms' ),
+			'view_item'          => __( 'View form', 'gsmtc-forms' ),
+			'all_items'          => __( 'All forms', 'gsmtc-forms' ),
+			'search_items'       => __( 'Search formss', 'gsmtc-forms' ),
+			'not_found'          => __( "There aren't  forms.", 'gsmtc-forms' ),
+			'not_found_in_trash' => __( "There arent't forms in the trash.", 'gsmtc-forms' ),
+            'parent_item_colon'  => ''
+		);
+	
+
+		register_post_type('gsmtc-form',
+			array(
+				'labels'			=> $labels_gsmtc_form,
+				'description' 		=> 'Custom post type used to store data from gsmtc-forms',
+                'show_ui'           => true, 
+                'show_in_rest'      => false,
+				'capability_type'    => 'post',
+				'menu_position'      => null,
+				'supports'           => array( 'title','editor','custom-fields'),
+			)			
+		);
+    }
+
+    /**
+     * Method save_post
+     * 
+     * Este metodo se ejecuta con el filtro del mismo nombre, y detecta si se esta actualizando algún formulario de creado con el plugin
+     * gsmtc-forms
+     * 
+     */
+
+
     function save_post($post_id, $post, $updated){
         if ($updated){
-            // To prevent infinity loop
+            // Unhook to prevent infinity loop
             remove_action('save_post',array($this,'save_post'),10);
             error_log ('Se ha ejecutado la funcion "save_post", $post :'.var_export($post,true).PHP_EOL);
 
@@ -54,39 +103,89 @@ class Gsmtc_Forms{
 
             } while ( $gsmtc_form_initial_position !== false );
 
-            error_log ('Se ha ejecutado la funcion "save_post", $gsmtc_forms :'.var_export($gsmtc_forms,true).PHP_EOL);
+            foreach( $gsmtc_forms as $form){
+                $this->update_form($form, $post);
+            }
 
+//            error_log ('Se ha ejecutado la funcion "save_post", $gsmtc_forms :'.var_export($gsmtc_forms,true).PHP_EOL);
+
+            // Rehook to prevent infinity loop 
             add_action( 'save_post', array($this,'save_post'),10,3);
 
         }
     }
 
-    function the_post($posts,$query){
+    function update_form($form, $post){
+        $form_id = $this->get_form_id($form);
+        $form_name = $this->get_form_name($form);
+        if ($form_name == '')
+            $form_name = $form_id;
+        $post_id = $this->get_gsmtc_form_post_id($form_id);
+        if ($post_id == 0)
+            $this->insert_gsmtc_form_post($form, $form_id, $form_name, $post->ID);
 
-//        error_log ('Se ha ejecutado la funcion "the_post", $query :'.var_export($query,true).PHP_EOL);
-        error_log ('Se ha ejecutado la funcion "the_post", $post :'.var_export($posts->post_content,true).PHP_EOL);
-        foreach ($posts as $post){
-  
-        }
-        $posts->post_content = stripslashes( '<!-- wp:gsmtc-forms/gsmtc-form {\\"id\\":\\"1703178964\\"} -->
-		<form class=\\"wp-block-gsmtc-forms-gsmtc-form\\" id=\\"1703178964\\"><!-- wp:group {\\"layout\\":{\\"type\\":\\"flex\\",\\"orientation\\":\\"vertical\\",\\"justifyContent\\":\\"center\\"}} -->
-		<div class=\\"wp-block-group\\"><!-- wp:heading -->
-		<h2 class=\\"wp-block-heading\\">Form title</h2>
-		<!-- /wp:heading --></div>
-		<!-- /wp:group -->
-		
-		<!-- wp:group {\\"layout\\":{\\"type\\":\\"flex\\",\\"flexWrap\\":\\"nowrap\\",\\"justifyContent\\":\\"center\\"}} -->
-		<div class=\\"wp-block-group\\"><!-- wp:gsmtc-forms/gsmtc-label {\\"forInput\\":\\"name\\",\\"content\\":\\"Nombre\\"} -->
-		<label for=\\"name\\" class=\\"wp-block-gsmtc-forms-gsmtc-label\\">Nombre</label>
-		<!-- /wp:gsmtc-forms/gsmtc-label -->
-		
-		<!-- wp:gsmtc-forms/gsmtc-text {\\"name\\":\\"name\\"} -->
-		<input type=\\"text\\" class=\\"wp-block-gsmtc-forms-gsmtc-text\\" name=\\"name\\"/>
-		<!-- /wp:gsmtc-forms/gsmtc-text --></div>
-		<!-- /wp:group --></form>
-		<!-- /wp:gsmtc-forms/gsmtc-form -->');
 
-        return $posts;
+        error_log ('Se ha ejecutado la funcion "update_form", $form_id :'.var_export($form_id,true).PHP_EOL);
+        error_log ('Se ha ejecutado la funcion "update_form", $post_id :'.var_export($post_id,true).PHP_EOL);
+        
+    }
+
+    function insert_gsmtc_form_post($form, $form_id, $form_name, $post_id_holded){
+        
+        $post_list = [$post_id_holded];
+        $meta_post = array(
+            'gsmtc_form_id' => wp_strip_all_tags( $form_id),
+            'gsmtc_form_posts_list' => $post_list
+        );
+
+        $post_data = array(
+            'post_title' =>wp_strip_all_tags( $form_name), 
+            'post_content' => addslashes($form),
+            'post_type' => 'gsmtc-form',
+            'post_status' => 'private',
+            'meta_input' => $meta_post
+        );
+
+        $result = wp_insert_post($post_data);
+
+        return $result;
+    } 
+
+    function get_gsmtc_form_post_id($form_id){
+        global $wpdb;
+
+        $tablename = $wpdb->prefix.'postmeta';
+        $query = "SELECT post_id FROM ".$tablename." WHERE meta_key='gsmtc_form_id' and meta_value=".$form_id;
+        $post_id = $wpdb->get_var($query);
+
+        if ($post_id !== NULL)
+            return $post_id;
+        else return 0;
+    }
+
+    function get_form_id($form){
+        $form_id = '';
+        $start_char_id = strpos($form, 'id":"');
+        if ($start_char_id !== false){
+            $start_char_id = $start_char_id + 5;
+            $end_char_id = strpos($form,'"',$start_char_id + 1);
+            $form_id = substr($form, $start_char_id, ($end_char_id - $start_char_id));
+        } 
+
+        return $form_id;
+    }
+
+    function get_form_name($form){
+        $form_name = '';
+        $start_char = strpos($form, 'name":"');
+        if ($start_char !== false){
+            $start_char = $start_char + 7;
+            $end_char = strpos($form,'"',$start_char + 1);
+            $form_name = substr($form, $start_char, ($end_char - $start_char));
+            error_log ('Se ha ejecutado la funcion "get_form_name", $form_name :'.var_export($form_name,true).PHP_EOL);
+        } 
+
+        return $form_name;
     }
 
     /**
