@@ -63,28 +63,6 @@ add_filter('block_categories_all','gsmtc_forms_add_block_categories');
 function create_blocks_gsmtc_forms_blocks_init() {
 
 	global $base;
-	/**
-	 * Register simple-contact block
-	 */
-//	$simple_contact_assets =  include_once(GSMTC_FORMS_DIR.'simple-contact/build/index.asset.php');
-
-///	wp_register_script('simple-contact-block',plugins_url('./simple-contact/build/index.js',__FILE__),$simple_contact_assets['dependencies'],$simple_contact_assets['version']);
-
-//	wp_register_script('simple-contact-js',plugins_url('./simple-contact/simple-contact.js',__FILE__),$simple_contact_assets['dependencies'],$simple_contact_assets['version']);
-	
-//	wp_register_script('gsmtc-forms-form-js',plugins_url('./gsmtc-form/gsmtc-forms-form.js',__FILE__));
-
-
-//	wp_localize_script ('simple-contact-js','datosAjax',array('rest_url' => rest_url('/gsmtc-forms/simple-contact'),'rest_nonce' => wp_create_nonce('wp_rest')));
-	
-//	wp_register_style('simple-contact',plugins_url('./simple-contact/build/style-index.css',__FILE__),array(),$simple_contact_assets['version']);
-
-//	register_block_type( 'gsmtc-forms/simple-contact',array(
-//		'editor_script' => 'simple-contact-block',
-//		'script' => 'simple-contact-js',
-//		'style' => 'simple-contact'
-//		) 
-//	);
 
 	/**
 	 * Register the gsmtc-form block using the block api v2
@@ -102,36 +80,4 @@ function create_blocks_gsmtc_forms_blocks_init() {
 
 }
 add_action( 'init', 'create_blocks_gsmtc_forms_blocks_init' );
-
-
-/******
- * Function gsmtc_forms_callback
- * 
- * Función para crear el callback del formulario
- */
-function gsmtc_forms_callback(){
-
-		error_log (" Se ha ejecutado la funcion 'gsmtc_forms_callback' ".PHP_EOL);
-
-		$bloque =stripslashes( '<!-- wp:gsmtc-forms/gsmtc-form {\\"id\\":\\"1703178964\\"} -->
-		<form class=\\"wp-block-gsmtc-forms-gsmtc-form\\" id=\\"1703178964\\"><!-- wp:group {\\"layout\\":{\\"type\\":\\"flex\\",\\"orientation\\":\\"vertical\\",\\"justifyContent\\":\\"center\\"}} -->
-		<div class=\\"wp-block-group\\"><!-- wp:heading -->
-		<h2 class=\\"wp-block-heading\\">Form title</h2>
-		<!-- /wp:heading --></div>
-		<!-- /wp:group -->
-		
-		<!-- wp:group {\\"layout\\":{\\"type\\":\\"flex\\",\\"flexWrap\\":\\"nowrap\\",\\"justifyContent\\":\\"center\\"}} -->
-		<div class=\\"wp-block-group\\"><!-- wp:gsmtc-forms/gsmtc-label {\\"forInput\\":\\"name\\",\\"content\\":\\"Nombre\\"} -->
-		<label for=\\"name\\" class=\\"wp-block-gsmtc-forms-gsmtc-label\\">Nombre</label>
-		<!-- /wp:gsmtc-forms/gsmtc-label -->
-		
-		<!-- wp:gsmtc-forms/gsmtc-text {\\"name\\":\\"name\\"} -->
-		<input type=\\"text\\" class=\\"wp-block-gsmtc-forms-gsmtc-text\\" name=\\"name\\"/>
-		<!-- /wp:gsmtc-forms/gsmtc-text --></div>
-		<!-- /wp:group --></form>
-		<!-- /wp:gsmtc-forms/gsmtc-form -->');
-	
-	//return $bloque;
-	return '';
-}
 
