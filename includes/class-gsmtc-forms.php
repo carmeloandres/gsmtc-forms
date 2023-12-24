@@ -24,6 +24,9 @@ class Gsmtc_Forms{
         $this->nonce_base = NONCE_KEY.date('y-m-d'); // add data to strengthen the nonce
 
         add_action('init',array($this,'init'));
+        add_filter('block_categories_all',array($this,'add_block_categories'));
+
+
         // hooking the response function to ajax requests
         add_action( 'wp_ajax_gsmtc_ajax_request', array($this,'ajax_request') );
         add_action( 'wp_ajax_nopriv_gsmtc_ajax_request', array($this,'ajax_request') );
@@ -39,8 +42,10 @@ class Gsmtc_Forms{
      * Method init
      * 
      * This method creates the gsmtc-form postype.
-     * Registers the block_pattern 'Gesimatica `pattern'
-     * 
+     * Registers the gsmtc-forms blocks.
+     * Registers the block_pattern category'Gesimatica forms`pattern'
+     * Registers the gsmtc-forms as block pattern
+     * REgisters the script to manage the submit forms
      */
 
     function init(){
@@ -61,38 +66,76 @@ class Gsmtc_Forms{
 			'not_found_in_trash' => __( "There arent't forms in the trash.", 'gsmtc-forms' ),
             'parent_item_colon'  => ''
 		);
-	
-        // Regidters the "gsmtc-form" custom post type
-		register_post_type('gsmtc-form',
-			array(
-				'labels'			=> $labels_gsmtc_form,
-				'description' 		=> 'Custom post type used to store data from gsmtc-forms',
+                
+        // Registers the "gsmtc-form" custom post type
+
+        register_post_type('gsmtc-form',
+            array(
+                'labels'			=> $labels_gsmtc_form,
+                'description' 		=> 'Custom post type used to store data from gsmtc-forms',
                 'show_ui'           => true, 
                 'show_in_rest'      => false,
-				'capability_type'    => 'post',
-				'menu_position'      => null,
-				'supports'           => array( 'title','editor','custom-fields'),
-			)			
+                'capability_type'    => 'post',
+                'menu_position'      => null,
+                'supports'           => array( 'title','editor','custom-fields'),
+                )			
 		);
-
-        // resiter the "Gesimatica forms" block pattern
+        
+        // Register the gsmtc-forms blocks using the block api v2
+        register_block_type( GSMTC_FORMS_DIR.'/gsmtc-button');
+        register_block_type( GSMTC_FORMS_DIR.'/gsmtc-checkbox');
+        register_block_type( GSMTC_FORMS_DIR.'/gsmtc-date');
+        register_block_type( GSMTC_FORMS_DIR.'/gsmtc-email');
+        register_block_type( GSMTC_FORMS_DIR.'/gsmtc-fieldset');
+        register_block_type( GSMTC_FORMS_DIR.'/gsmtc-form');
+        register_block_type( GSMTC_FORMS_DIR.'/gsmtc-label');
+        register_block_type( GSMTC_FORMS_DIR.'/gsmtc-submit');
+        register_block_type( GSMTC_FORMS_DIR.'/gsmtc-text');
+        register_block_type( GSMTC_FORMS_DIR.'/gsmtc-textarea');
+    
+        // Register the "Gesimatica forms" block pattern
         register_block_pattern_category(
             'gsmtc-forms', // Unique identifier for your category
             array(
                 'label' => esc_html__('Gesimatica forms', 'gsmtc-forms'), // Category label
             )
         );
-
+        
         $gsmtc_forms = $this->get_all_gsmtc_forms();
-
+        
         foreach($gsmtc_forms as $form){
             register_block_pattern( $form->post_title,
-                array(
-                    'title' =>  $form->post_title,
-                    'content' =>  $form->post_content,
-                    'categories' => ['gsmtc-forms'],
-                ));
+            array(
+                'title' =>  $form->post_title,
+                'content' =>  $form->post_content,
+                'categories' => ['gsmtc-forms'],
+            ));
         }
+
+        // Registers the form submit script  
+	    wp_register_script(
+		    'gsmtc-forms-form-js',
+		    GSMTC_FORMS_URL.'/gsmtc-form/gsmtc-forms-form.js',
+    	);
+
+    }
+
+   /**
+     * Method add_block_categories
+     * 
+     * This method adds the gsmtc-form category.
+     * 
+     */
+    function add_block_categories($block_categories){
+        array_push (
+            $block_categories,
+            array(
+                'slug' => 'gsmtc',
+                'title'=> __('Formularios Gesimática','gsmtc-forms'),
+                'icon' => null,
+            )
+        );
+        return $block_categories;
     }
 
     /**
@@ -161,7 +204,7 @@ class Gsmtc_Forms{
         $form_id = $this->get_form_id($form);
         $form_name = $this->get_form_name($form);
         if ($form_name == '')
-            $form_name = $form_id;
+            $form_name = 'Form-'.$form_id;
         $post_id = $this->get_gsmtc_form_post_id($form_id);
         if ($post_id == 0)
             $this->insert_gsmtc_form_post($form, $form_id, $form_name, $post->ID);

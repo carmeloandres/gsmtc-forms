@@ -15,8 +15,7 @@
 			"type":"string"
 		},
 		"content":{
-			"type":"string",
-			"default":"label"
+			"type":"string"
 		}
 	}
 }

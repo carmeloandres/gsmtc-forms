@@ -38,6 +38,7 @@ register_activation_hook(__FILE__,'gsmtc_forms_activate');
 /**
  * Filter function to add new categories to block categories
  */
+/*
 function gsmtc_forms_add_block_categories($block_categories){
 		array_push (
 			$block_categories,
@@ -51,33 +52,5 @@ function gsmtc_forms_add_block_categories($block_categories){
 }
 add_filter('block_categories_all','gsmtc_forms_add_block_categories');
 
-
-
-/**
- * Registers the block using the metadata loaded from the `block.json` file.
- * Behind the scenes, it registers also all assets so they can be enqueued
- * through the block editor in the corresponding context.
- *
- * @see https://developer.wordpress.org/reference/functions/register_block_type/
- */
-function create_blocks_gsmtc_forms_blocks_init() {
-
-	global $base;
-
-	/**
-	 * Register the gsmtc-form block using the block api v2
-	 */
-	register_block_type( __DIR__.'/gsmtc-button');
-	register_block_type( __DIR__.'/gsmtc-checkbox');
-	register_block_type( __DIR__.'/gsmtc-date');
-	register_block_type( __DIR__.'/gsmtc-email');
-	register_block_type( __DIR__.'/gsmtc-fieldset');
-	register_block_type( __DIR__.'/gsmtc-form');
-	register_block_type( __DIR__.'/gsmtc-label');
-	register_block_type( __DIR__.'/gsmtc-submit');
-	register_block_type( __DIR__.'/gsmtc-text');
-	register_block_type( __DIR__.'/gsmtc-textarea');
-
-}
-add_action( 'init', 'create_blocks_gsmtc_forms_blocks_init' );
+*/
 
