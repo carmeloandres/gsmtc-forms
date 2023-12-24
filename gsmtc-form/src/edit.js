@@ -6,8 +6,7 @@
 import { __ } from '@wordpress/i18n';
 import { useEffect, useState } from "@wordpress/element"
 import { InnerBlocks, InspectorControls, useBlockProps } from '@wordpress/block-editor';
-import { Button, Notice, Panel, PanelBody, TextControl} from  '@wordpress/components';
-
+import { Button, Panel, PanelBody, TextControl} from  '@wordpress/components';
 
 
 export default function Edit({attributes, setAttributes}) {
@@ -17,13 +16,21 @@ export default function Edit({attributes, setAttributes}) {
 	
 	const [disabledButton, setDisabledButton] = useState(false);
 
-
+	const onUpdateButton = () => {
+		setDisabledButton(false);
+	} 
 
 	useEffect(() => {
 		if (id == '0') {
 			let segundos = Math.trunc(Date.now() / 1000);
 			setAttributes({id: segundos.toString()})
 			setDisabledButton(true);
+		}
+
+		let inputs = Array.from(document.getElementsByClassName('editor-post-publish-button'));
+		if (inputs.length > 0){
+			let button = inputs[0]
+			button.addEventListener('click',onUpdateButton);
 		}
 	},[])
 
