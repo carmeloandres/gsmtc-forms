@@ -82,13 +82,14 @@ class Gsmtc_Forms{
 		);
         
         // Register the gsmtc-forms blocks using the block api v2
-        register_block_type( GSMTC_FORMS_DIR.'/gsmtc-button');
+       
         register_block_type( GSMTC_FORMS_DIR.'/gsmtc-checkbox');
         register_block_type( GSMTC_FORMS_DIR.'/gsmtc-date');
         register_block_type( GSMTC_FORMS_DIR.'/gsmtc-email');
         register_block_type( GSMTC_FORMS_DIR.'/gsmtc-fieldset');
         register_block_type( GSMTC_FORMS_DIR.'/gsmtc-form');
         register_block_type( GSMTC_FORMS_DIR.'/gsmtc-label');
+        register_block_type( GSMTC_FORMS_DIR.'/gsmtc-radio');
         register_block_type( GSMTC_FORMS_DIR.'/gsmtc-submit');
         register_block_type( GSMTC_FORMS_DIR.'/gsmtc-text');
         register_block_type( GSMTC_FORMS_DIR.'/gsmtc-textarea');
@@ -102,15 +103,31 @@ class Gsmtc_Forms{
         );
         
         $gsmtc_forms = $this->get_all_gsmtc_forms();
-        
+        $version = get_option('gsmtc-forms-block-pattern-version',1);
+
         foreach($gsmtc_forms as $form){
+            $get_patterns  = WP_Block_Patterns_Registry::get_instance()->get_all_registered();
+            foreach($get_patterns as $pattern){
+                if (isset($pattern['categories'])  && in_array('gsmtc-forms',$pattern['categories']))
+//                    $keys = array_keys($pattern);
+//                    error_log ('Se ha ejecutado la funcion "init", $keys :'.var_export($keys,true).PHP_EOL);
+//                    error_log ('Se ha ejecutado la funcion "init", $pattenr[keys[2]] :'.var_export($pattern[$keys[2]],true).PHP_EOL);
+                    error_log ('Se ha ejecutado la funcion "init", $patten :'.var_export($pattern,true).PHP_EOL);
+
+                }
+
+
+//            unregister_block_pattern( $form->post_title);
             register_block_pattern( $form->post_title,
             array(
                 'title' =>  $form->post_title,
                 'content' =>  $form->post_content,
                 'categories' => ['gsmtc-forms'],
+                'version' => $version,
             ));
         }
+
+        update_option('gsmtc-forms-block-pattern-version',$version + 1);
 
         // Registers the form submit script  
 	    wp_register_script(
@@ -432,6 +449,7 @@ class Gsmtc_Forms{
         $this->create_tables();
         // Create custom styles dir, if not exists
         if ( ! is_dir(GSMTC_FORMS_STYLES_DIR) ) mkdir(GSMTC_FORMS_STYLES_DIR);
+        add_option('gsmtc-forms-block-pattern-version',1);
                        
     }
 

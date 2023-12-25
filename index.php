@@ -35,22 +35,3 @@ function gsmtc_forms_activate(){
 }
 register_activation_hook(__FILE__,'gsmtc_forms_activate'); 
 
-/**
- * Filter function to add new categories to block categories
- */
-/*
-function gsmtc_forms_add_block_categories($block_categories){
-		array_push (
-			$block_categories,
-			array(
-				'slug' => 'gsmtc',
-				'title'=> __('Formularios Gesimática','gsmtc-forms'),
-				'icon' => null,
-			)
-			);
-		return $block_categories;
-}
-add_filter('block_categories_all','gsmtc_forms_add_block_categories');
-
-*/
-

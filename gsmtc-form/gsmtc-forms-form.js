@@ -11,6 +11,15 @@ const gsmtcFormsFormSubmit = (event) => {
             console.log(input);
         }
     })
+
+    let elements = Array.from(event.target.elements);
+    let contador = 0;
+
+    elements.forEach(element => {
+        console.log ('Elemento ',contador,' : ',element);
+        console.log ('Elemento type :',element.type,'Elemento name : ',element.name,' Elemento value : ',element.value);
+        contador++;
+    })
     
 }
 

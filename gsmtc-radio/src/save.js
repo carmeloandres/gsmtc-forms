@@ -8,10 +8,10 @@ import {useBlockProps} from "@wordpress/block-editor";
 
 export default function save({attributes}) {
 
-	const { name, defaultValue, required, validationPattern, validationMessage } = attributes
+	const { group, name, checked } = attributes
 	const blockProps = useBlockProps.save();
 
 	return (
-		<input type="text" {...blockProps} value={defaultValue} name={name}  required={required} pattern={validationPattern} title={validationMessage}/>
+		<input type="radio" {...blockProps} name={group} value={name} checked={checked} />
 		);
 }

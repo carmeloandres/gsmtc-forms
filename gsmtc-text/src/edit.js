@@ -10,7 +10,7 @@ import { Panel, PanelBody, TextControl, ToggleControl} from  "@wordpress/compone
 
 
 export default function Edit({attributes, setAttributes}) {
-	const { name, defaultValue, required, hidden } = attributes
+	const { name, defaultValue, required, validationPattern, validationMessage } = attributes
 	const blockProps = useBlockProps();
 	
 	return (
@@ -33,15 +33,22 @@ export default function Edit({attributes, setAttributes}) {
                     		checked={required}
                     		onChange={(value) => setAttributes({ required: value })}
                 		/>
-						<ToggleControl
-						    label={__('Hidden','gsmtc-forms')}
-                    		checked={hidden}
-                    		onChange={(value) => setAttributes({ hidden: value })}
-                		/>
+					</PanelBody>
+					<PanelBody title={__('Input text validation ','gsmtc-forms')} initialOpen={false}>
+						<TextControl
+                            label={__('Validation regular pattern','gsmtc-forms')}
+                            value={validationPattern}
+                            onChange={(value) => setAttributes({ validationPattern: value })}
+	            	    />
+						<TextControl
+                            label={__('Validation message','gsmtc-forms')}
+                            value={validationMessage}
+                            onChange={(value) => setAttributes({ validationMessage: value })}
+	            	    />
 					</PanelBody>
 				</Panel>
 			</InspectorControls> 
-			<input type="text" {...blockProps} name={name}  required={required} value={defaultValue} hidden={hidden}/>
+			<input type="text" {...blockProps} name={name}  required={required} value={defaultValue} pattern={validationPattern} title={validationMessage}/>
 		</>
 	);
 }

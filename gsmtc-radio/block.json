@@ -1,31 +1,25 @@
 {
 	"$schema": "https://schemas.wp.org/trunk/block.json",
 	"apiVersion": 2,
-	"name": "gsmtc-forms/gsmtc-text",
+	"name": "gsmtc-forms/gsmtc-radio",
 	"version": "0.1.0",
-	"title": "Form Text",
+	"title": "Form Radio",
 	"category": "gsmtc",
-	"icon": "edit",
+	"icon": "marker",
 	"textdomain": "gsmtc-forms",
 	"editorScript": "file:./build/index.js",
 	"editorStyle": "file:./build/index.css",
 	"style": "file:./build/style-index.css",
 	"attributes": {
+		"group":{
+			"type":"string"
+		},
 		"name":{
 			"type":"string"
 		},
-		"defaultValue":{
-			"type":"string"
-		},
-		"required":{
+		"checked":{
 			"type":"boolean",
 			"default":false
-		},
-		"validationPattern":{
-			"type":"string"
-		},
-		"validationMessage":{
-			"type":"string"
 		}
 	}
 }
