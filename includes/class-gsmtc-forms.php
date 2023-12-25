@@ -103,28 +103,33 @@ class Gsmtc_Forms{
         );
         
         $gsmtc_forms = $this->get_all_gsmtc_forms();
-        $version = get_option('gsmtc-forms-block-pattern-version',1);
+        $version = get_option('gsmtc-forms-block-pattern-version',1);            
+        error_log ('Se ha ejecutado la funcion "init", $gsmtc-forms :'.var_export($gsmtc_forms,true).PHP_EOL);
 
         foreach($gsmtc_forms as $form){
             $get_patterns  = WP_Block_Patterns_Registry::get_instance()->get_all_registered();
+
             foreach($get_patterns as $pattern){
-                if (isset($pattern['categories'])  && in_array('gsmtc-forms',$pattern['categories']))
+                if (isset($pattern['categories'])  && in_array('gsmtc-forms',$pattern['categories'])){
+                    error_log ('Se ha ejecutado la funcion "init", $form :'.var_export($form,true).PHP_EOL);
 //                    $keys = array_keys($pattern);
 //                    error_log ('Se ha ejecutado la funcion "init", $keys :'.var_export($keys,true).PHP_EOL);
 //                    error_log ('Se ha ejecutado la funcion "init", $pattenr[keys[2]] :'.var_export($pattern[$keys[2]],true).PHP_EOL);
-                    error_log ('Se ha ejecutado la funcion "init", $patten :'.var_export($pattern,true).PHP_EOL);
-
+                    error_log ('Se ha ejecutado la funcion "init", $pattern :'.var_export($pattern,true).PHP_EOL);
+            unregister_block_pattern( $pattern['name']);
                 }
+            }
 
 
-//            unregister_block_pattern( $form->post_title);
-            register_block_pattern( $form->post_title,
-            array(
-                'title' =>  $form->post_title,
-                'content' =>  $form->post_content,
-                'categories' => ['gsmtc-forms'],
-                'version' => $version,
-            ));
+//            unregister_block_pattern( $form->post_name);
+
+                register_block_pattern( $form->post_name,
+                    array(
+                        'title' =>  $form->post_title,
+                        'content' =>  $form->post_content,
+                        'categories' => ['gsmtc-forms'],
+                        'version' => $version,
+                    ));
         }
 
         update_option('gsmtc-forms-block-pattern-version',$version + 1);
@@ -167,7 +172,7 @@ class Gsmtc_Forms{
         $gsmtc_forms = array();
 
         $tablename = $wpdb->prefix.'posts';
-        $query = "SELECT post_title,post_content FROM ".$tablename." WHERE post_type='gsmtc-form'";
+        $query = "SELECT post_title,post_name,post_content FROM ".$tablename." WHERE post_type='gsmtc-form'";
         $posts_ids = $wpdb->get_results($query);
 
         if ($posts_ids === NULL)
@@ -216,6 +221,13 @@ class Gsmtc_Forms{
 
         }
     }
+    /**
+     * Method update_post
+     * 
+     * Este metodo se ejecuta para actualizar el custom posttype 'gsmtc-form' si es necesario y modificar todos 
+     * los posts en los que aparece el formulario.
+     * 
+     */
 
     function update_form($form, $post){
         $form_id = $this->get_form_id($form);
@@ -225,33 +237,79 @@ class Gsmtc_Forms{
         $post_id = $this->get_gsmtc_form_post_id($form_id);
         if ($post_id == 0)
             $this->insert_gsmtc_form_post($form, $form_id, $form_name, $post->ID);
-
+        else $this->update_gsmtc_form_posts($form, $form_id, $form_name, $post_id, $post->ID);
 
         error_log ('Se ha ejecutado la funcion "update_form", $form_id :'.var_export($form_id,true).PHP_EOL);
         error_log ('Se ha ejecutado la funcion "update_form", $post_id :'.var_export($post_id,true).PHP_EOL);
         
     }
 
-    function insert_gsmtc_form_post($form, $form_id, $form_name, $post_id_holded){
+    function insert_gsmtc_form_post($form, $form_id, $form_name, $post_id_holder){
         
-        $post_list = [$post_id_holded];
+        $post_data = array(
+            'post_title' =>wp_strip_all_tags( $form_name), 
+            'post_content' => addslashes($form),
+            'post_type' => 'gsmtc-form',
+            'post_status' => 'private',
+            'meta_input' => array('gsmtc_form_id' => wp_strip_all_tags( $form_id)),
+        );
+
+        $result = wp_insert_post($post_data);
+        if (is_int($result) && ($result > 0)){
+            $post_list = [$post_id_holder,$result];
+            update_post_meta($result,$post_list);
+        }
+
+        return $result;
+    } 
+
+    function update_gsmtc_form_posts($form, $form_id, $form_name, $gsmtc_form_id, $post_id_holder){
+
+        // obtengo la lista de posts en la que se encuentra este formulario
+        $post_list = get_post_meta($gsmtc_form_id,'gsmtc_form_posts_list');
+
+        //Busco si en la lista de post se encuentra el actual post que ha sido actualizado y que contiene el formulario
+        $encontrado = false;
+        $contador = 0;
+        $longitud = count($post_list);
+        while (($longitud > $contador) && !$encontrado){
+            if ($post_list[$contador] == $post_id_holder)
+                $encontrado = true;
+            $contador++;
+        }
+        // Si el post actual no esta en la lista se añade a la lista
+        if (!$encontrado)
+            $post_list[] = $post_id_holder;
+        
+        // actualizo el post gsmtc-form del formulario, con la lista de post actualizados
         $meta_post = array(
             'gsmtc_form_id' => wp_strip_all_tags( $form_id),
             'gsmtc_form_posts_list' => $post_list
         );
-
+        
         $post_data = array(
+            'ID' => $gsmtc_form_id,
             'post_title' =>wp_strip_all_tags( $form_name), 
             'post_content' => addslashes($form),
             'post_type' => 'gsmtc-form',
             'post_status' => 'private',
             'meta_input' => $meta_post
         );
+        
+        $result = wp_update_post($post_data,false,false);
 
-        $result = wp_insert_post($post_data);
-
-        return $result;
+        // Actualizo el formulario en todos los posts de la lista meno en el post actual
+        foreach ($post_list as $post_id )
+            if (($post_id != $post_id_holder))
+                $this->update_form_post($form,$post_id); 
+                
     } 
+
+
+
+    function update_form_post($form,$post_id){
+
+    }
 
     function get_gsmtc_form_post_id($form_id){
         global $wpdb;
