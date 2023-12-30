@@ -24,6 +24,7 @@ class Gsmtc_Forms{
         $this->nonce_base = NONCE_KEY.date('y-m-d'); // add data to strengthen the nonce
 
         add_action('init',array($this,'init'));
+        add_action('rest_api_init',array($this,'rest_api_init')); 
         add_filter('block_categories_all',array($this,'add_block_categories'));
         add_action( 'plugins_loaded',array($this,'load_textdomain'));
         add_action( 'save_post', array($this,'save_post'),10,3);
@@ -144,12 +145,103 @@ class Gsmtc_Forms{
 
         // loads the data to conect to API
         wp_localize_script('gsmtc-forms-form-js','GsmtcFormsAPI',array(
-            "restUrl" => "<?php echo rest_url( '/jardinactivo/jardinero' ); ?>",
-            "nonce" => "<?php echo wp_create_nonce('wp_rest') ?>",
+            "restUrl" =>  rest_url( '/gsmtc-forms/form' ),
+            "nonce" => wp_create_nonce('wp_rest'),
             "homeUrl" => home_url(),
         ));
 
     }
+
+     /**
+	 * rest_api_init
+	 * 
+	 * Este metodo crea los endpoints para la conexion con la api de la aplicación
+	 *
+	 * @return void
+	 */
+	function rest_api_init(){
+        // Ruta para gestionar la api de las petciones desde la plantilla jardinero
+		register_rest_route('gsmtc-forms','form',array(
+			'methods'  => 'POST',
+			'callback' => array($this,'manage_api_request'),
+			'permission_callback' => array($this,'get_permissions_check'),			
+	
+		));
+	}
+
+	/**
+	 * manage_api_request
+	 * 
+	 * This method manage de recuest of the endpoints 
+	 *
+	 * @return void
+	 */
+		
+     function manage_api_request(WP_REST_Request $request ){
+
+		$result = json_encode(0);
+
+		if ($request->sanitize_params()){
+
+			$params = $request->get_params();
+
+            error_log ('Manage_api_request_ - $params : '.var_export($params,true));
+
+            if (isset($params['action'])){
+				$action = $params['action'];
+				error_log ('Estamos dentro del bucle, $params: '.var_export($params,true));
+				switch ($action){
+					case 'cargar_anotaciones':
+						$result = $this->cargar_anotaciones($params);
+						break;
+					case 'actualizar_anotacion' :
+						$result = $this->actualizar_anotacion($params);
+						break;				
+					case 'cargar_datos_paginacion' :
+						$result = $this->cargar_datos_paginacion($params);
+						break;
+					case 'borrar_anotacion' :
+						$result = $this->borrar_anotacion($params);
+						break;							
+					case 'get_list' :
+						$result = $this->get_list($params);
+						break;		
+					case 'update_customer' :
+						$result = $this->update_customer($params);
+						break;										
+					}
+			} 
+		}
+		error_log ('Resultado del bucle, $result: '.var_export($result,true));
+
+		echo json_encode($result);
+		exit();
+	}
+
+
+
+   /**
+	 * get_permissions_check
+	 * 
+	 * Method to manage the access permissions to the endpoints
+	 * only administrators can access
+	 *
+	 * @return void
+	 */
+	function get_permissions_check(){
+
+
+	//	$user = wp_get_current_user();
+
+	//	if ( isset( $user->roles ) && is_array( $user->roles ) ) {
+	//		if (! ( in_array('jardinero',$user->roles) || in_array('administrator',$user->roles) || in_array('editor',$user->roles)))
+	//			return new WP_Error( 'rest_forbidden', esc_html__( 'OMG you can not view private data.', 'gsmtc-forms' ), array( 'status' => 401 ) );
+	//	}
+
+	
+		return true;
+	
+	}
 
    /**
      * Method add_block_categories
