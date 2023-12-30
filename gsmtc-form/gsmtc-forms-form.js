@@ -33,6 +33,9 @@ window.onload = function (){
 
     console.log('formularios detectados',formulario.length);
 
+    console.log ('GsmtcFormsAPI : ',GsmtcFormsAPI);
+    console.log ('GsmtcFormsAPI.homeUrl : ',GsmtcFormsAPI.homeUrl);
+
 
 }
 

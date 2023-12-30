@@ -142,6 +142,13 @@ class Gsmtc_Forms{
 		    GSMTC_FORMS_URL.'/gsmtc-form/gsmtc-forms-form.js',
     	);
 
+        // loads the data to conect to API
+        wp_localize_script('gsmtc-forms-form-js','GsmtcFormsAPI',array(
+            "restUrl" => "<?php echo rest_url( '/jardinactivo/jardinero' ); ?>",
+            "nonce" => "<?php echo wp_create_nonce('wp_rest') ?>",
+            "homeUrl" => home_url(),
+        ));
+
     }
 
    /**
@@ -198,19 +205,7 @@ class Gsmtc_Forms{
             remove_action('save_post',array($this,'save_post'),10);
             
             $gsmtc_forms = $this->get_forms_array_from_post($post->post_content);
-/*            $gsmtc_form_offset = 0;            
-            do {
-                $gsmtc_form_initial_position = strpos( $post->post_content, '<!-- wp:gsmtc-forms/gsmtc-form', $gsmtc_form_offset);
-                $gsmtc_form_end_position = strpos( $post->post_content, '<!-- /wp:gsmtc-forms/gsmtc-form -->', $gsmtc_form_offset);
-                
-                if (($gsmtc_form_initial_position !== false) && ($gsmtc_form_end_position !== false) ){                
-                    $longitud = $gsmtc_form_end_position - $gsmtc_form_initial_position + 35;
-                    $gsmtc_forms[] = substr($post->post_content,$gsmtc_form_initial_position,($gsmtc_form_end_position - $gsmtc_form_initial_position + 35));                   
-                    $gsmtc_form_offset = $gsmtc_form_end_position + 35;
-                }
-                
-            } while ( ($gsmtc_form_initial_position !== false) && ($gsmtc_form_end_position) );
-*/            
+
             foreach( $gsmtc_forms as $form){
                 if ($this->is_new_form($form))
                     $this->create_new_gsmtc_form($form, $post_id);
