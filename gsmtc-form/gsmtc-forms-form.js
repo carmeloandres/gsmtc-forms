@@ -1,6 +1,14 @@
 const gsmtcFormsFormSubmit = async (event) => {
     event.preventDefault();
 
+    // muestro las notificaciones
+    let notices = Array.from(document.getElementsByClassName('wp-block-gsmtc-forms-gsmtc-noticesend'));
+
+        notices.forEach( (notice) => {
+            notice.style.display = 'block';
+        })
+    
+
     console.log('form submited, event.target : ', event.target);
     let inputs = Array.from(event.target.querySelectorAll("input"));
     
@@ -70,6 +78,13 @@ window.onload = function (){
 
     console.log ('GsmtcFormsAPI : ',GsmtcFormsAPI);
     console.log ('GsmtcFormsAPI.homeUrl : ',GsmtcFormsAPI.homeUrl);
+
+    // oculto las notificaciones
+    let notices = Array.from(document.getElementsByClassName('wp-block-gsmtc-forms-gsmtc-noticesend'));
+
+        notices.forEach( (notice) => {
+            notice.style.display = 'none';
+        })
 
 
 }

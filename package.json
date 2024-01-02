@@ -29,6 +29,8 @@
     "start:gsmtc-form": "wp-scripts start ./gsmtc-form/src/index.js --output-path=./gsmtc-form/build",
     "build:gsmtc-label": "wp-scripts build ./gsmtc-label/src/index.js --output-path=./gsmtc-label/build",
     "start:gsmtc-label": "wp-scripts start ./gsmtc-label/src/index.js --output-path=./gsmtc-label/build",
+    "build:gsmtc-noticesend": "wp-scripts build ./gsmtc-noticesend/src/index.js --output-path=./gsmtc-noticesend/build",
+    "start:gsmtc-noticesend": "wp-scripts start ./gsmtc-noticesend/src/index.js --output-path=./gsmtc-noticesend/build",
     "build:gsmtc-radio": "wp-scripts build ./gsmtc-radio/src/index.js --output-path=./gsmtc-radio/build",
     "start:gsmtc-radio": "wp-scripts start ./gsmtc-radio/src/index.js --output-path=./gsmtc-radio/build",
     "build:gsmtc-text": "wp-scripts build ./gsmtc-text/src/index.js --output-path=./gsmtc-text/build",

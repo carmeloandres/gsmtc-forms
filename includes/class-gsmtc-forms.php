@@ -75,7 +75,7 @@ class Gsmtc_Forms{
                 'labels'			=> $labels_gsmtc_form,
                 'description' 		=> 'Custom post type used to store data from gsmtc-forms',
                 'show_ui'           => true, 
-                'show_in_rest'      => false,
+                'show_in_rest'      => true, // This option in 'true' allows the use of the block editor
                 'capability_type'    => 'post',
                 'menu_position'      => null,
                 'supports'           => array( 'title','editor','custom-fields'),
@@ -90,6 +90,7 @@ class Gsmtc_Forms{
         register_block_type( GSMTC_FORMS_DIR.'/gsmtc-fieldset');
         register_block_type( GSMTC_FORMS_DIR.'/gsmtc-form');
         register_block_type( GSMTC_FORMS_DIR.'/gsmtc-label');
+        register_block_type( GSMTC_FORMS_DIR.'/gsmtc-noticesend');
         register_block_type( GSMTC_FORMS_DIR.'/gsmtc-radio');
         register_block_type( GSMTC_FORMS_DIR.'/gsmtc-submit');
         register_block_type( GSMTC_FORMS_DIR.'/gsmtc-text');
@@ -338,15 +339,20 @@ class Gsmtc_Forms{
         $form_id = $this->get_form_id($form);
         $gsmtc_post_id = $this->get_gsmtc_form_post_id($form_id);
         $post_list = get_post_meta($gsmtc_post_id,'gsmtc_form_posts_list',true);
-        $encontrado = false;
-        foreach($post_list as $id){
-            if($post_id == $id)
-                $encontrado = true;
-        }
-
-        if (! $encontrado){
-            $post_list[] = $post_id;
-            update_post_meta($gsmtc_post_id,'gsmtc_form_posts_list',$post_list);
+        if ( ! is_array($post_list))
+            $post_list = array();
+        // Si el post actualizado no es el custom post type del formulario, lo incluimos en la lista, en caso de no estar en ella.
+        if ($gsmtc_post_id != $post_id){
+            $encontrado = false;
+            foreach($post_list as $id){
+                if($post_id == $id)
+                    $encontrado = true;
+            }
+    
+            if (! $encontrado){
+                $post_list[] = $post_id;
+                update_post_meta($gsmtc_post_id,'gsmtc_form_posts_list',$post_list);
+            }
         }
 
         return $post_list;
@@ -641,6 +647,9 @@ class Gsmtc_Forms{
                 }
 
                 $gsmtc_form_offset = $gsmtc_form_end_position + 35;
+                if ( $gsmtc_form_offset >= strlen( $post_content ) ){
+                    $gsmtc_form_offset = strlen( $post_content ) - 1;
+                } 
             }
 
         } while ( $gsmtc_form_initial_position !== false );

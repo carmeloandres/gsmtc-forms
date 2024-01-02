@@ -8,7 +8,6 @@ import { useEffect, useState } from "@wordpress/element"
 import { InnerBlocks, InspectorControls, useBlockProps } from '@wordpress/block-editor';
 import { Button, Panel, PanelBody, TextControl} from  '@wordpress/components';
 
-
 export default function Edit({attributes, setAttributes}) {
 
 	const { id, name } = attributes
