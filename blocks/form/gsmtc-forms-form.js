@@ -2,7 +2,7 @@ const gsmtcFormsFormSubmit = async (event) => {
     event.preventDefault();
 
     // muestro las notificaciones
-    let notices = Array.from(document.getElementsByClassName('wp-block-gsmtc-forms-gsmtc-noticesend'));
+    let notices = Array.from(event.target.getElementsByClassName('wp-block-gsmtc-forms-gsmtc-noticesend'));
 
         notices.forEach( (notice) => {
             notice.style.display = 'block';
@@ -33,6 +33,7 @@ const gsmtcFormsFormSubmit = async (event) => {
 
     let apiData = new FormData();
         apiData.append('action','actualizar_formulario');
+        apiData.append('formId',event.target.id);
     
     elements.forEach(element => {
         if ((element.type == 'radio') && (element.checked))
@@ -70,7 +71,7 @@ const gsmtcFormsFormSubmit = async (event) => {
 window.onload = function (){
  //   console.log('Datos ajax : ',datosAjax);
 
-    let formulario = Array.from(document.getElementsByClassName('wp-block-gsmtc-forms-gsmtc-form'));
+    let formulario = Array.from(document.getElementsByClassName('wp-block-gsmtc-forms-form'));
         
     formulario.forEach( form => {form.addEventListener('submit',gsmtcFormsFormSubmit)})
 

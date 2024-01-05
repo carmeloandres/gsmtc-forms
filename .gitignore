@@ -3,12 +3,12 @@ gsmtc-checkbox/build
 gsmtc-date/build
 gsmtc-email/build
 gsmtc-fieldset/build
-gsmtc-form/build
+blocks/form/build
 gsmtc-label/build
 gsmtc-noticesend/build
 gsmtc-radio/build
 gsmtc-submit/build
-gsmtc-text/build
+blocks/text/build
 gsmtc-textarea/build
 package-lock.json
 

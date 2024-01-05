@@ -84,17 +84,17 @@ class Gsmtc_Forms{
         
         // Register the gsmtc-forms blocks using the block api v2
        
-        register_block_type( GSMTC_FORMS_DIR.'/gsmtc-checkbox');
-        register_block_type( GSMTC_FORMS_DIR.'/gsmtc-date');
-        register_block_type( GSMTC_FORMS_DIR.'/gsmtc-email');
-        register_block_type( GSMTC_FORMS_DIR.'/gsmtc-fieldset');
-        register_block_type( GSMTC_FORMS_DIR.'/gsmtc-form');
-        register_block_type( GSMTC_FORMS_DIR.'/gsmtc-label');
-        register_block_type( GSMTC_FORMS_DIR.'/gsmtc-noticesend');
-        register_block_type( GSMTC_FORMS_DIR.'/gsmtc-radio');
-        register_block_type( GSMTC_FORMS_DIR.'/gsmtc-submit');
-        register_block_type( GSMTC_FORMS_DIR.'/gsmtc-text');
-        register_block_type( GSMTC_FORMS_DIR.'/gsmtc-textarea');
+//        register_block_type( GSMTC_FORMS_DIR.'/gsmtc-checkbox');
+//        register_block_type( GSMTC_FORMS_DIR.'/gsmtc-date');
+//        register_block_type( GSMTC_FORMS_DIR.'/gsmtc-email');
+//        register_block_type( GSMTC_FORMS_DIR.'/gsmtc-fieldset');
+        register_block_type( GSMTC_FORMS_DIR.'/blocks/form');
+//        register_block_type( GSMTC_FORMS_DIR.'/gsmtc-label');
+//        register_block_type( GSMTC_FORMS_DIR.'/gsmtc-noticesend');
+//        register_block_type( GSMTC_FORMS_DIR.'/gsmtc-radio');
+//        register_block_type( GSMTC_FORMS_DIR.'/gsmtc-submit');
+        register_block_type( GSMTC_FORMS_DIR.'/blocks/text');
+//        register_block_type( GSMTC_FORMS_DIR.'/gsmtc-textarea');
     
         // Register the "Gesimatica forms" block pattern category
         register_block_pattern_category(
@@ -141,7 +141,7 @@ class Gsmtc_Forms{
         // Registers the form submit script  
 	    wp_register_script(
 		    'gsmtc-forms-form-js',
-		    GSMTC_FORMS_URL.'/gsmtc-form/gsmtc-forms-form.js',
+		    GSMTC_FORMS_URL.'/blocks/form/gsmtc-forms-form.js',
     	);
 
         // loads the data to conect to API
@@ -254,7 +254,7 @@ class Gsmtc_Forms{
         array_push (
             $block_categories,
             array(
-                'slug' => 'gsmtc',
+                'slug' => 'gsmtc-forms',
                 'title'=> __('Formularios Gesimática','gsmtc-forms'),
                 'icon' => null,
             )
