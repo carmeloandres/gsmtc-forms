@@ -37,8 +37,8 @@
     "start:text": "wp-scripts start ./blockstext/src/index.js --output-path=./blocks/text/build",
     "build:gsmtc-textarea": "wp-scripts build ./gsmtc-textarea/src/index.js --output-path=./gsmtc-textarea/build",
     "start:gsmtc-textarea": "wp-scripts start ./gsmtc-textarea/src/index.js --output-path=./gsmtc-textarea/build",
-    "build:gsmtc-submit": "wp-scripts build ./gsmtc-submit/src/index.js --output-path=./gsmtc-submit/build",
-    "start:gsmtc-submit": "wp-scripts start ./gsmtc-submit/src/index.js --output-path=./gsmtc-submit/build"
+    "build:submit": "wp-scripts build ./blocks/submit/src/index.js --output-path=./blocks/submit/build",
+    "start:submit": "wp-scripts start ./blocks/submit/src/index.js --output-path=./blocks/submit/build"
   },
   "keywords": [],
   "author": "",

@@ -4,10 +4,16 @@
 	"name": "gsmtc-forms/gsmtc-submit",
 	"version": "0.1.0",
 	"title": "Form Submit",
-	"category": "gsmtc",
+	"category": "gsmtc-forms",
 	"icon": "button",
 	"textdomain": "gsmtc-forms",
 	"editorScript": "file:./build/index.js",
 	"editorStyle": "file:./build/index.css",
-	"style": "file:./build/style-index.css"
+	"style": "file:./build/style-index.css",
+	"attributes": {
+		"text":{
+			"type":"string",
+			"default":"Submit"
+		}
+	}
 }

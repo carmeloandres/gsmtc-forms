@@ -34,6 +34,7 @@ const gsmtcFormsFormSubmit = async (event) => {
     let apiData = new FormData();
         apiData.append('action','actualizar_formulario');
         apiData.append('formId',event.target.id);
+        apiData.append('formName',event.target.name);
     
     elements.forEach(element => {
         if ((element.type == 'radio') && (element.checked))

@@ -92,7 +92,7 @@ class Gsmtc_Forms{
 //        register_block_type( GSMTC_FORMS_DIR.'/gsmtc-label');
 //        register_block_type( GSMTC_FORMS_DIR.'/gsmtc-noticesend');
 //        register_block_type( GSMTC_FORMS_DIR.'/gsmtc-radio');
-//        register_block_type( GSMTC_FORMS_DIR.'/gsmtc-submit');
+        register_block_type( GSMTC_FORMS_DIR.'/blocks/submit');
         register_block_type( GSMTC_FORMS_DIR.'/blocks/text');
 //        register_block_type( GSMTC_FORMS_DIR.'/gsmtc-textarea');
     

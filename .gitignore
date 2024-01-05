@@ -7,7 +7,7 @@ blocks/form/build
 gsmtc-label/build
 gsmtc-noticesend/build
 gsmtc-radio/build
-gsmtc-submit/build
+blocks/submit/build
 blocks/text/build
 gsmtc-textarea/build
 package-lock.json
