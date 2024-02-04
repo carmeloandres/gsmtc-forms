@@ -86,11 +86,12 @@ class Gsmtc_Forms{
        
 //        register_block_type( GSMTC_FORMS_DIR.'/gsmtc-checkbox');
 //        register_block_type( GSMTC_FORMS_DIR.'/gsmtc-date');
-//        register_block_type( GSMTC_FORMS_DIR.'/gsmtc-email');
+        register_block_type( GSMTC_FORMS_DIR.'/blocks/email');
 //        register_block_type( GSMTC_FORMS_DIR.'/gsmtc-fieldset');
         register_block_type( GSMTC_FORMS_DIR.'/blocks/form');
-//        register_block_type( GSMTC_FORMS_DIR.'/gsmtc-label');
+        register_block_type( GSMTC_FORMS_DIR.'/blocks/label');
 //        register_block_type( GSMTC_FORMS_DIR.'/gsmtc-noticesend');
+        register_block_type( GSMTC_FORMS_DIR.'/blocks/main-email');
 //        register_block_type( GSMTC_FORMS_DIR.'/gsmtc-radio');
         register_block_type( GSMTC_FORMS_DIR.'/blocks/submit');
         register_block_type( GSMTC_FORMS_DIR.'/blocks/text');
@@ -146,10 +147,14 @@ class Gsmtc_Forms{
 
         // loads the data to conect to API
         wp_localize_script('gsmtc-forms-form-js','GsmtcFormsAPI',array(
-            "restUrl" =>  rest_url( '/gsmtc-forms/form' ),
+            "restUrl" =>  esc_url_raw(rest_url( '/gsmtc-forms/form' )),
             "nonce" => wp_create_nonce('wp_rest'),
             "homeUrl" => home_url(),
         ));
+
+        //Registers the blocks styles
+        wp_register_style('gsmtc-forms-submit-css',
+                            GSMTC_FORMS_URL.'/blocks/submit/gsmtc-forms-submit.css');
 
     }
 
@@ -293,10 +298,14 @@ class Gsmtc_Forms{
 
 
     function save_post($post_id, $post, $updated){
+
+        
         if ($updated){
             // Unhook to prevent infinity loop
             remove_action('save_post',array($this,'save_post'),10);
             
+//            error_log ('Se ha ejecutado la funcion "save_post", $post_id :'.var_export($post_id,true).' , $post : '.var_export($post,true).PHP_EOL);
+
             $gsmtc_forms = $this->get_forms_array_from_post($post->post_content);
 
             foreach( $gsmtc_forms as $form){
@@ -447,21 +456,21 @@ class Gsmtc_Forms{
         // Iteramos sobre el contenido del post para encontrar y extraer los formularios.
         do {
             // Buscamos la posición inicial de un bloque de formulario.
-            $gsmtc_form_initial_position = strpos($post_content, '<!-- wp:gsmtc-forms/gsmtc-form', $gsmtc_form_offset);
+            $gsmtc_form_initial_position = strpos($post_content, '<!-- wp:gsmtc-forms/form', $gsmtc_form_offset);
 
             // Buscamos la posición final de un bloque de formulario.
-            $gsmtc_form_end_position = strpos($post_content, '<!-- /wp:gsmtc-forms/gsmtc-form -->', $gsmtc_form_offset);
+            $gsmtc_form_end_position = strpos($post_content, '<!-- /wp:gsmtc-forms/form -->', $gsmtc_form_offset);
 
             // Verificamos si se encontraron ambas posiciones.
             if (($gsmtc_form_initial_position !== false) && ($gsmtc_form_end_position !== false)) {
                 // Calculamos la longitud del bloque de formulario.
-                $longitud = $gsmtc_form_end_position - $gsmtc_form_initial_position + 35;
+                $longitud = $gsmtc_form_end_position - $gsmtc_form_initial_position + 29;
 
                 // Extraemos el bloque de formulario y lo almacenamos en el array.
                 $gsmtc_forms[] = substr($post_content, $gsmtc_form_initial_position, $longitud);
 
                 // Actualizamos el offset para buscar el próximo formulario.
-                $gsmtc_form_offset = $gsmtc_form_end_position + 35;
+                $gsmtc_form_offset = $gsmtc_form_end_position + 29;
             }
 
         } while (($gsmtc_form_initial_position !== false) && ($gsmtc_form_end_position !== false));
@@ -850,8 +859,8 @@ class Gsmtc_Forms{
         // Create tables in database, if not exists
         $this->create_tables();
         // Create custom styles dir, if not exists
-        if ( ! is_dir(GSMTC_FORMS_STYLES_DIR) ) mkdir(GSMTC_FORMS_STYLES_DIR);
-        add_option('gsmtc-forms-block-pattern-version',1);
+//        if ( ! is_dir(GSMTC_FORMS_STYLES_DIR) ) mkdir(GSMTC_FORMS_STYLES_DIR);
+//        add_option('gsmtc-forms-block-pattern-version',1);
                        
     }
 
@@ -868,8 +877,9 @@ class Gsmtc_Forms{
          */
         $query_forms = "CREATE TABLE IF NOT EXISTS " . $this->table_name_forms . " (
             id bigint(20) unsigned NOT NULL AUTO_INCREMENT,
-            nameform varchar (50)COLLATE utf8mb4_unicode_ci,
+            idform varchar(15)COLLATE utf8mb4_unicode_ci,
             date varchar (10)COLLATE utf8mb4_unicode_ci,
+            context text COLLATE utf8mb4_unicode_ci,
                                                 
             PRIMARY KEY (id)
             ) DEFAULT CHARSET = utf8mb4 COLLATE=utf8mb4_unicode_ci;";

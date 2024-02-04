@@ -1,0 +1,14 @@
+{
+	"$schema": "https://schemas.wp.org/trunk/block.json",
+	"apiVersion": 2,
+	"name": "gsmtc-forms/main-email",
+	"version": "0.1.0",
+	"title": "Form Main Email",
+	"category": "gsmtc",
+	"icon": "email",
+	"textdomain": "gsmtc-forms",
+	"editorScript": "file:./build/index.js",
+	"editorStyle": "file:./build/index.css",
+	"style": "file:./build/style-index.css"
+	
+}

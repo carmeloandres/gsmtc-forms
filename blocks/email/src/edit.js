@@ -31,7 +31,7 @@ export default function Edit({attributes, setAttributes}) {
 					</PanelBody>
 				</Panel>
 			</InspectorControls> 
-			<input type="text" {...blockProps} name={name}  required={required} />
+			<input type="email" {...blockProps} name={name}  required={required} />
 		</>
 	);
 }

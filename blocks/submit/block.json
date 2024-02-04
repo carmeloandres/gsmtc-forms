@@ -9,11 +9,15 @@
 	"textdomain": "gsmtc-forms",
 	"editorScript": "file:./build/index.js",
 	"editorStyle": "file:./build/index.css",
-	"style": "file:./build/style-index.css",
+	"style": "file:./build/index.css",
 	"attributes": {
 		"text":{
 			"type":"string",
 			"default":"Submit"
+		},
+		"miClase":{
+			"type":"string"
 		}
+
 	}
 }

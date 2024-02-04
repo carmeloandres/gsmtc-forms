@@ -1,13 +1,19 @@
 
 import { useBlockProps } from '@wordpress/block-editor';
 
+import './gsmtc-forms-submit.css';
+
 export default function save({attributes}) {
-	const { text } = attributes
-	const blockProps = useBlockProps.save();
+	const { miClase, text } = attributes
+	const blockProps = useBlockProps.save({
+		className : 'gsmtc-forms-submit-container justify-content-center'
+	});
 	
 	return (
 		<>
-			<input {...blockProps} type="submit" value={text} />
+		<div {...blockProps}>
+			<input className='wp-element-button' type="submit" value={text} />
+		</div>
 		</>	
 		);
 }

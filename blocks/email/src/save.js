@@ -12,6 +12,6 @@ export default function save({attributes}) {
 	const blockProps = useBlockProps.save();
 
 	return (
-		<input type="text" {...blockProps} name={name}  required={required} />
+		<input type="email" {...blockProps} name={name}  required={required} />
 		);
 }

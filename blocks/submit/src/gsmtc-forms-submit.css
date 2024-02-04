@@ -1,0 +1,9 @@
+.gsmtc-forms-submit-container{
+    background-color: #abcdef;
+    display: flex;
+    width: 100%;
+}
+
+.justify-content-center{
+    justify-content: center;
+}
