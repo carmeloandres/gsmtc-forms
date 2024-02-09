@@ -298,7 +298,6 @@ class Gsmtc_Forms{
 
 
     function save_post($post_id, $post, $updated){
-
         
         if ($updated){
             // Unhook to prevent infinity loop
@@ -309,33 +308,36 @@ class Gsmtc_Forms{
             $gsmtc_forms = $this->get_forms_array_from_post($post->post_content);
 
             foreach( $gsmtc_forms as $form){
-                if ($this->is_new_form($form))
+                if ($this->is_new_form($form)){
                     $this->create_new_gsmtc_form($form, $post_id);
-                else 
-                    if ($this->is_modified_form($form)){
-                        error_log ('Se ha ejecutado la funcion "save_post", EL FORMULARIO HA SIDO MODIFICADO, $form :'.PHP_EOL);//.var_export($form,true).PHP_EOL);
-                        $this->update_form($form, $post_id);
+                    error_log ('Se ha ejecutado la funcion "save_post", EL FORMULARIO ES NUEVO, $post_id :'.var_export($post_id,true).PHP_EOL);
+                } else {
+                        if ($this->is_modified_form($form)){
+                            error_log ('Se ha ejecutado la funcion "save_post", EL FORMULARIO HA SIDO MODIFICADO, $form :'.PHP_EOL);//.var_export($form,true).PHP_EOL);
+                            $this->update_form($form, $post_id);
 
-                    } else {
-                        // buscamos en la lista de posts del formulario, y si no esta el post actual, lo añadimos
+                        } else {
+                            // buscamos en la lista de posts del formulario, y si no esta el post actual, lo añadimos
 
-//                        $form_id = $this->get_form_id($form);
-//                        $gsmtc_post_id = $this->get_gsmtc_form_post_id($form_id);
-                        $post_list = $this->add_id_to_list_if_proceeds($form,$post_id);
-/*                        $encontrado = false;
-                        foreach($post_list as $id){
-                            if($post_id == $id)
-                                $encontrado = true;
+    //                        $form_id = $this->get_form_id($form);
+    //                        $gsmtc_post_id = $this->get_gsmtc_form_post_id($form_id);
+                            $post_list = $this->add_id_to_list_if_proceeds($form,$post_id);
+    /*                        $encontrado = false;
+                            foreach($post_list as $id){
+                                if($post_id == $id)
+                                    $encontrado = true;
+                            }
+
+                            if (! $encontrado){
+                                $post_list[] = $post_id;
+                                update_post_meta($gsmtc_post_id,'gsmtc_form_posts_list',$post_list);
+                            }
+
+    */
+                            error_log ('Se ha ejecutado la funcion "save_post", EL FORMULARIO NO HA SIDO MODIFICADO, $post_list :'.var_export($post_list,true).PHP_EOL);//.var_export($form,true).PHP_EOL);
                         }
 
-                        if (! $encontrado){
-                            $post_list[] = $post_id;
-                            update_post_meta($gsmtc_post_id,'gsmtc_form_posts_list',$post_list);
-                        }
-
-*/
-                        error_log ('Se ha ejecutado la funcion "save_post", EL FORMULARIO NO HA SIDO MODIFICADO, $post_list :'.var_export($post_list,true).PHP_EOL);//.var_export($form,true).PHP_EOL);
-                    }
+                } 
             }
 
             // Rehook to prevent infinity loop 
@@ -347,7 +349,10 @@ class Gsmtc_Forms{
     function add_id_to_list_if_proceeds($form,$post_id){
         $form_id = $this->get_form_id($form);
         $gsmtc_post_id = $this->get_gsmtc_form_post_id($form_id);
-        $post_list = get_post_meta($gsmtc_post_id,'gsmtc_form_posts_list',true);
+        $vector = get_post_meta($gsmtc_post_id,'gsmtc_form_posts_list');
+        $post_list = $vector[0];
+        error_log ('Se ha ejecutado la funcion "add_id_to_list_if_proceeds", $post_list :'.var_export($post_list,true).PHP_EOL);
+
         if ( ! is_array($post_list))
             $post_list = array();
         // Si el post actualizado no es el custom post type del formulario, lo incluimos en la lista, en caso de no estar en ella.
@@ -398,7 +403,7 @@ class Gsmtc_Forms{
             'post_status'   => 'private',
             'meta_input'    => array(
                 'gsmtc_form_id'          => wp_strip_all_tags($form_id),
-                'gsmtc_form_posts_list'  => array($post_id_holder),
+                'gsmtc_form_posts_list'  => [$post_id_holder],
             ),
         );
 
@@ -421,15 +426,23 @@ class Gsmtc_Forms{
      * @return bool Retorna true si el formulario es nuevo, false si ya existe.
      */
     function is_new_form($form) {
+
+        global $wpdb;
+
         // Obtenemos el ID del formulario utilizando la función get_form_id.
         $form_id = $this->get_form_id($form);
 
-        // Verificamos si el ID del formulario está vacío.
-        if ($form_id == '') {
-            // Si el ID está vacío, significa que el formulario es nuevo.
+        // Comprobamos si hay post_id asociado al id del formulario.
+        $table_name = $wpdb->prefix.'postmeta';
+        $query = "SELECT 'post_id' FROM ".$table_name." WHERE meta_key = 'gsmtc_form_id' AND meta_value =".$form_id;  
+        $result = $wpdb->get_var($query);
+
+        // Verificamos si el resultado.
+        if ($result == NULL) {
+            // Si el post_id está vacío, significa que el formulario es nuevo.
             return true;
         } else {
-            // Si el ID no está vacío, significa que el formulario ya existe.
+            // Si el post_id no está vacío, significa que el formulario ya existe.
             return false;
         }
     }
@@ -562,10 +575,7 @@ class Gsmtc_Forms{
         if ($form_name == '')
             $form_name = 'Gsmtc-Form-'.$form_id;
         $gsmtc_post_id = $this->get_gsmtc_form_post_id($form_id);
-        if ($gsmtc_post_id == 0)
-            $this->create_new_gsmtc_form($form, $post_id_holder);
-//            $this->insert_gsmtc_form_post($form, $form_id, $form_name, $post->ID);
-        else $this->update_gsmtc_form_posts($form, $form_id, $form_name, $gsmtc_post_id, $post_id_holder);
+        $this->update_gsmtc_form_posts($form, $form_id, $form_name, $gsmtc_post_id, $post_id_holder);
 
 //        error_log ('Se ha ejecutado la funcion "update_form", $form_id :'.var_export($form_id,true).PHP_EOL);
 //        error_log ('Se ha ejecutado la funcion "update_form", $post_id :'.var_export($post_id,true).PHP_EOL);
@@ -626,23 +636,25 @@ class Gsmtc_Forms{
         $post_content = $this->get_post_content($post_id);            
 //        error_log ('Se ha ejecutado la funcion "update_form_post", $post_content :'.var_export($post_content,true).PHP_EOL);
         do {
-            $gsmtc_form_initial_position = strpos( $post_content, '<!-- wp:gsmtc-forms/gsmtc-form', $gsmtc_form_offset);
-            $gsmtc_form_end_position = strpos( $post_content, '<!-- /wp:gsmtc-forms/gsmtc-form -->', $gsmtc_form_offset);
+            $gsmtc_form_initial_position = strpos( $post_content, '<!-- wp:gsmtc-forms/form', $gsmtc_form_offset);
+            $gsmtc_form_end_position = strpos( $post_content, '<!-- /wp:gsmtc-forms/form -->', $gsmtc_form_offset);
 
             if (($gsmtc_form_initial_position !== false) && ($gsmtc_form_end_position !== false) ){ 
                 
+                // get a form
+                $search = substr($post_content,$gsmtc_form_initial_position,($gsmtc_form_end_position - $gsmtc_form_initial_position + 29));
+
                 // obtenemos el id del formulario que esta en el post
                 $post_form_id = '';
-                $start_char_id = strpos($post_content, 'id":"',$gsmtc_form_initial_position);
+                $start_char_id = strpos($search, 'id":"');
                 if ($start_char_id !== false){
                     $start_char_id = $start_char_id + 5;
-                    $end_char_id = strpos($post_content,'"',$start_char_id + 1);
-                    $post_form_id = substr($post_content, $start_char_id, ($end_char_id - $start_char_id));
+                    $end_char_id = strpos($search,'"',$start_char_id + 1);
+                    $post_form_id = substr($search, $start_char_id, ($end_char_id - $start_char_id));
                 } 
         
                 if ($form_id == $post_form_id){
     
-                    $search = substr($post_content,$gsmtc_form_initial_position,($gsmtc_form_end_position - $gsmtc_form_initial_position + 35));
 //                    error_log ('Se ha ejecutado la funcion "update_form_post", $search :'.var_export($search,true).PHP_EOL);
 
                     $post_content = str_replace($search,$form,$post_content);                  
@@ -655,10 +667,10 @@ class Gsmtc_Forms{
                     $result = wp_update_post($post_data,false,false);
                 }
 
-                $gsmtc_form_offset = $gsmtc_form_end_position + 35;
-                if ( $gsmtc_form_offset >= strlen( $post_content ) ){
-                    $gsmtc_form_offset = strlen( $post_content ) - 1;
-                } 
+                $gsmtc_form_offset = $gsmtc_form_end_position + 29;
+//                if ( $gsmtc_form_offset >= strlen( $post_content ) ){
+//                    $gsmtc_form_offset = strlen( $post_content ) - 1;
+//                } 
             }
 
         } while ( $gsmtc_form_initial_position !== false );
@@ -703,13 +715,26 @@ class Gsmtc_Forms{
     }
 
     function get_form_name($form){
+        // Dafault value of form_name
         $form_name = '';
-        $start_char = strpos($form, 'name":"');
-        if ($start_char !== false){
-            $start_char = $start_char + 7;
-            $end_char = strpos($form,'"',$start_char + 1);
-            $form_name = substr($form, $start_char, ($end_char - $start_char));
-        } 
+
+        // getting the header of gesimatica form block
+        $start_char_header = strpos($form,'<!-- wp:gsmtc-forms/form');
+        if ($start_char_header !== false){
+            $end_char_header = strpos($form,'-->',$start_char_header);
+            if ($end_char_header !== false){
+                $form_header = substr($form, $start_char_header, ($end_char_header - $start_char_header));
+                if ($form_header !== '' && $form_header !== false){
+                    // Once we get the header and is valid, proced to obtain the form name 
+                    $start_char = strpos($form_header, 'name":"');
+                    if ($start_char !== false){
+                        $start_char = $start_char + 7;
+                        $end_char = strpos($form_header,'"',$start_char + 1);
+                        $form_name = substr($form_header, $start_char, ($end_char - $start_char));
+                    } 
+                }
+            }
+        }
 
         return $form_name;
     }
