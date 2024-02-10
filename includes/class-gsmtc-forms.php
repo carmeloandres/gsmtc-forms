@@ -11,7 +11,6 @@ class Gsmtc_Forms{
     public $table_name_forms;
     public $table_name_data_forms;
 
-    public $nonce_base;
        
     function __construct()
     {
@@ -21,21 +20,14 @@ class Gsmtc_Forms{
         $this->table_name_forms = $wpdb->prefix.$this->plugin_prefix.'forms';
         $this->table_name_data_forms = $wpdb->prefix.$this->plugin_prefix.'forms_data';
 
-        $this->nonce_base = NONCE_KEY.date('y-m-d'); // add data to strengthen the nonce
 
         add_action('init',array($this,'init'));
         add_action('rest_api_init',array($this,'rest_api_init')); 
         add_filter('block_categories_all',array($this,'add_block_categories'));
         add_action( 'plugins_loaded',array($this,'load_textdomain'));
         add_action( 'save_post', array($this,'save_post'),10,3);
+        add_action( 'before_delete_post', array($this,'before_delete_post'),10,2);
 
-
-        // hooking the response function to ajax requests
-        add_action( 'wp_ajax_gsmtc_ajax_request', array($this,'ajax_request') );
-        add_action( 'wp_ajax_nopriv_gsmtc_ajax_request', array($this,'ajax_request') );
-        add_action( 'rest_api_init', array($this,'endpoints') );
-//        add_action( 'edit_post',array($this,'edit_post'),10,2);
-//        add_filter( 'wp_insert_post_data',array($this,'wp_insert_post_data'),10,4);
 
     }
 
@@ -55,14 +47,14 @@ class Gsmtc_Forms{
 		$labels_gsmtc_form = array(
 			'name'               => _x( 'Gsmtc Forms', 'post type general name', 'gsmtc-forms' ),
 			'singular_name'      => _x( 'Gsmtc Form', 'post type singular name', 'gsmtc-forms' ),
-			'menu_name'          => _x( 'Gsmtc Formss', 'admin menu', 'gsmtc-forms' ),
+			'menu_name'          => _x( 'Gsmtc Forms', 'admin menu', 'gsmtc-forms' ),
 			'add_new'            => _x( 'Add new', 'form', 'gsmtc-forms' ),
 			'add_new_item'       => __( 'Add new form', 'gsmtc-forms' ),
 			'new_item'           => __( 'New form', 'gsmtc-forms' ),
 			'edit_item'          => __( 'Edit form', 'gsmtc-forms' ),
 			'view_item'          => __( 'View form', 'gsmtc-forms' ),
 			'all_items'          => __( 'All forms', 'gsmtc-forms' ),
-			'search_items'       => __( 'Search formss', 'gsmtc-forms' ),
+			'search_items'       => __( 'Search forms', 'gsmtc-forms' ),
 			'not_found'          => __( "There aren't  forms.", 'gsmtc-forms' ),
 			'not_found_in_trash' => __( "There arent't forms in the trash.", 'gsmtc-forms' ),
             'parent_item_colon'  => ''
@@ -126,8 +118,7 @@ class Gsmtc_Forms{
 //        error_log ('Se ha ejecutado la funcion "init", $gsmtc-forms :'.var_export($gsmtc_forms,true).PHP_EOL);
 
         foreach($gsmtc_forms as $form){
-
-            if ($form->post_status == 'private')
+            if ($form->post_status == 'publish') 
                 register_block_pattern( $form->post_name,
                     array(
                         'title' =>  $form->post_title,
@@ -156,6 +147,75 @@ class Gsmtc_Forms{
         wp_register_style('gsmtc-forms-submit-css',
                             GSMTC_FORMS_URL.'/blocks/submit/gsmtc-forms-submit.css');
 
+    }
+
+    /**
+     * Metodo: before_delete_post
+     *  
+     * Crea un nuevo formulario gsmtc y lo almacena como un post personalizado.
+     *
+     * Esta función toma un formulario gsmtc, su identificador y el ID del post en el que
+     * se aloja el formulario, y crea un nuevo post personalizado 'gsmtc-form' con la 
+     * información proporcionada.
+     *
+     * @param int $postid. El id del post a eliminar
+     * @param WP_Post $post El post a eleminar.
+     * @return int|WP_Error El ID del post creado o un objeto WP_Error si hay un error.
+     */
+    function before_delete_post($postid, $post) {
+        error_log ('Se ha ejecutado la funcion "before_delete_post", $post->post_type :'.var_export($post->post_type,true).PHP_EOL);
+        if ($post->post_type == 'gsmtc-form'){
+
+            // Unhook to prevent infinity loop
+            remove_action('save_post',array($this,'save_post'),10);
+
+            $form_id = get_post_meta($postid,'gsmtc_form_id',true);
+            $vector = get_post_meta($postid,'gsmtc_form_posts_list');
+            $post_list = $vector[0];
+            error_log ('Se ha ejecutado la funcion "before_delete_post", $post_list :'.var_export($post_list,true).' , $form_id :'.var_export($form_id,true).PHP_EOL);
+
+            foreach ($post_list as $post_id)
+                $this->delete_form_post($form_id, $post_id);
+
+            // Rehook to prevent infinity loop 
+            add_action( 'save_post', array($this,'save_post'),10,3);
+
+
+        }
+
+    }
+
+
+    function delete_form_post($form_id,$post_id){
+
+        $result = false;
+        error_log ('Se ha ejecutado la funcion "delete_form_post", $form_id :'.var_export($form_id,true).PHP_EOL);
+        
+        $post_content = $this->get_post_content($post_id);   
+
+//        error_log ('Se ha ejecutado la funcion "update_form_post", $post_content :'.var_export($post_content,true).PHP_EOL);
+        $gsmtc_form_initial_position = strpos( $post_content, '<!-- wp:gsmtc-forms/form {"id":"'.$form_id);
+        $gsmtc_form_end_position = strpos( $post_content, '<!-- /wp:gsmtc-forms/form -->');
+
+        if (($gsmtc_form_initial_position !== false) && ($gsmtc_form_end_position !== false) ){ 
+                
+            // get a form
+            $form_string = substr($post_content,$gsmtc_form_initial_position,($gsmtc_form_end_position - $gsmtc_form_initial_position + 29));
+            $new_post_content = str_replace($form_string,'',$post_content);
+    
+//                    error_log ('Se ha ejecutado la funcion "update_form_post", $search :'.var_export($search,true).PHP_EOL);
+
+            $post_data = array(
+                'ID' => $post_id,
+                'post_content' => addslashes($new_post_content),
+            );
+                    
+            $result = wp_update_post($post_data,false,false);
+ 
+        }
+
+
+        return $result;
     }
 
      /**
@@ -303,7 +363,7 @@ class Gsmtc_Forms{
             // Unhook to prevent infinity loop
             remove_action('save_post',array($this,'save_post'),10);
             
-//            error_log ('Se ha ejecutado la funcion "save_post", $post_id :'.var_export($post_id,true).' , $post : '.var_export($post,true).PHP_EOL);
+//            error_log ('Se ha ejecutado la funcion "save_post", $post :'.var_export($post,true).PHP_EOL);
 
             $gsmtc_forms = $this->get_forms_array_from_post($post->post_content);
 
@@ -312,13 +372,11 @@ class Gsmtc_Forms{
                     $this->create_new_gsmtc_form($form, $post_id);
                     error_log ('Se ha ejecutado la funcion "save_post", EL FORMULARIO ES NUEVO, $post_id :'.var_export($post_id,true).PHP_EOL);
                 } else {
-                        if ($this->is_modified_form($form)){
-                            error_log ('Se ha ejecutado la funcion "save_post", EL FORMULARIO HA SIDO MODIFICADO, $form :'.PHP_EOL);//.var_export($form,true).PHP_EOL);
+                        if (($this->is_modified_form($form)) || ($post->post_type == 'gsmtc-form')){
+                            error_log ('Se ha ejecutado la funcion "save_post", EL FORMULARIO HA SIDO MODIFICADO'.PHP_EOL);//.var_export($form,true).PHP_EOL);
                             $this->update_form($form, $post_id);
 
                         } else {
-                            // buscamos en la lista de posts del formulario, y si no esta el post actual, lo añadimos
-
     //                        $form_id = $this->get_form_id($form);
     //                        $gsmtc_post_id = $this->get_gsmtc_form_post_id($form_id);
                             $post_list = $this->add_id_to_list_if_proceeds($form,$post_id);
@@ -400,7 +458,7 @@ class Gsmtc_Forms{
             'post_title'    => wp_strip_all_tags($form_name),
             'post_content'  => addslashes($form),
             'post_type'     => 'gsmtc-form',
-            'post_status'   => 'private',
+            'post_status'   => 'publish',
             'meta_input'    => array(
                 'gsmtc_form_id'          => wp_strip_all_tags($form_id),
                 'gsmtc_form_posts_list'  => [$post_id_holder],
@@ -613,7 +671,6 @@ class Gsmtc_Forms{
             'post_title' =>wp_strip_all_tags( $form_name), 
             'post_content' => addslashes($form),
             'post_type' => 'gsmtc-form',
-            'post_status' => 'private',
             'meta_input' => $meta_post
         );
 
@@ -739,55 +796,6 @@ class Gsmtc_Forms{
         return $form_name;
     }
 
-    /**
-     * Method wp_insert_post_data
-     * 
-     * Este metodo se ejecuta con el filtro del mismo nombre, y detecta si se esta actualizando algún formulario de creado con el plugin
-     * gsmtc-forms
-     * 
-     * @params $data, postarr
-     * @return $data
-     */
-
-     function wp_insert_post_data($data,$postarr,$unsanitized,$updated){
-         
-
-        if ($data['post_type'] == 'revision')
-            error_log (PHP_EOL." Se ha ejecutado la funcion 'wp_insert_post_data', es una copia de seguridad ".PHP_EOL);
-        else {
-
-            $gsmtc_forms_positions = array();
-            $gsmtc_form_initial_position = 0;            
-            do {
-                $gsmtc_form_initial_position = strpos($data['post_content'],'<!-- wp:gsmtc-forms/gsmtc-form',$gsmtc_form_initial_position);
-                if ($gsmtc_form_initial_position !== false )
-                    $gsmtc_forms_position[] = $gsmtc_form_initial_position;
-
-            } while ( $gsmtc_form_initial_position != false );
-
-            error_log (" Se ha ejecutado la funcion 'wp_insert_post_data', gsmtc_forms_positions :".PHP_EOL.var_export($gsmtc_forms_positions,true).PHP_EOL);
-
-                 $offset = 32;
-                 $id_position = strpos($data['post_content'],'id=');
-                 if ($id_position != false){
-                     $id_value_position = strpos($data['post_content'],'"',$id_position) + 1;
-                     $id_value_final_position = strpos($data['post_content'],'"',$id_value_position);   
-                     $id_value = stripslashes(substr($data['post_content'],$id_value_position, $id_value_position - $id_value_initial_position));        
-                     error_log (" Se ha ejecutado la funcion 'wp_insert_post_data', gsmtc-form -> id :".PHP_EOL.var_export($id_value,true).PHP_EOL.' $form_initial_position : '.var_export($form_initial_position,true));
-                    }
-                    
-                    // comprobamos si el id es cero
-                    // si el id es cero buscamos un identificador unico y lo añadimos como nuevo custom post tipe y como pattens en wordpress
-                    // si tenemos un identificador diferenta solo actualizamos el correspondiente custom post type y el correspondiente patrom.
-                
-
-                    error_log (" Se ha ejecutado la funcion 'wp_insert_post_data', data :".PHP_EOL.var_export($data,true).PHP_EOL.' $updated -> '.var_export($updated,true));
-        }
-
-
-            return $data;
-    }
-
 
 
 
@@ -830,31 +838,6 @@ class Gsmtc_Forms{
         return $result;
     }
 
-    /**
-     * Method to respond all the ajax requests
-     */
-    public function ajax_request(){
-
-        $result = false;
-        error_log (" Se ha ejecutado la funcion 'ajax_request'".PHP_EOL.var_export($_POST,true));
-        if (isset($_POST['nonce'])) {
-            if (wp_verify_nonce($_POST['nonce'],$this->nonce_base)){
-                if (isset($_POST['request'])){
-                    $request = $_POST['request'];
-                    error_log (" Se ha ejecutado la funcion 'ajax_request', el nonce es correcto ".PHP_EOL.var_export($request,true));
-
-                    switch ($request){
-                        case 'contact' :
-                            $result = $this->request_contact();
-                            break;
-                    }
-                } 
-            }
-        }
-
-        echo json_encode($result);
-        exit();
-    }
     
 
 
