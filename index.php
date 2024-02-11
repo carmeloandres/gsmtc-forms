@@ -20,18 +20,20 @@ if ( ! defined( 'ABSPATH' ) ) {die;} ; // to prevent direct access
 if ( ! defined('GSMTC_FORMS_DIR')) define ('GSMTC_FORMS_DIR',plugin_dir_path(__FILE__));
 if ( ! defined('GSMTC_FORMS_URL')) define ('GSMTC_FORMS_URL',plugin_dir_url(__FILE__));
 
-if ( ! defined('GSMTC_FORMS_STYLES_DIR')) define ('GSMTC_FORMS_STYLES_DIR', ABSPATH . 'wp-content/gsmtc-forms-styles/');
+//if ( ! defined('GSMTC_FORMS_STYLES_DIR')) define ('GSMTC_FORMS_STYLES_DIR', ABSPATH . 'wp-content/gsmtc-forms-styles/');
 
 require_once(dirname(__FILE__).'/includes/class-gsmtc-forms.php');
+require_once(dirname(__FILE__).'/includes/class-gsmtc-forms-api.php');
 
 $base = new Gsmtc_Forms();
+$api = new Gsmtc_Forms_Api();
 
 /**
  * Function for plugin activation
  */
 function gsmtc_forms_activate(){
-	$base = new Gsmtc_Forms();
-	$base->install_gsmtc_forms();
+	$api = new Gsmtc_Forms_Api();
+	$api->install_gsmtc_forms();
 }
 register_activation_hook(__FILE__,'gsmtc_forms_activate'); 
 

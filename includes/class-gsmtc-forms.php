@@ -22,7 +22,7 @@ class Gsmtc_Forms{
 
 
         add_action('init',array($this,'init'));
-        add_action('rest_api_init',array($this,'rest_api_init')); 
+//        add_action('rest_api_init',array($this,'rest_api_init')); 
         add_filter('block_categories_all',array($this,'add_block_categories'));
         add_action( 'plugins_loaded',array($this,'load_textdomain'));
         add_action( 'save_post', array($this,'save_post'),10,3);
@@ -313,96 +313,8 @@ class Gsmtc_Forms{
         return $result;
     }
 
-     /**
-	 * rest_api_init
-	 * 
-	 * Este metodo crea los endpoints para la conexion con la api de la aplicación
-	 *
-	 * @return void
-	 */
-	function rest_api_init(){
-        // Ruta para gestionar la api de las petciones desde la plantilla jardinero
-		register_rest_route('gsmtc-forms','form',array(
-			'methods'  => 'POST',
-			'callback' => array($this,'manage_api_request'),
-			'permission_callback' => array($this,'get_permissions_check'),			
-	
-		));
-	}
-
-	/**
-	 * manage_api_request
-	 * 
-	 * This method manage de recuest of the endpoints 
-	 *
-	 * @return void
-	 */
-		
-     function manage_api_request(WP_REST_Request $request ){
-
-		$result = json_encode(0);
-
-		if ($request->sanitize_params()){
-
-			$params = $request->get_params();
-
-            error_log ('Manage_api_request_ - $params : '.var_export($params,true));
-
-            if (isset($params['action'])){
-				$action = $params['action'];
-				error_log ('Estamos dentro del bucle, $params: '.var_export($params,true));
-				switch ($action){
-					case 'cargar_anotaciones':
-						$result = $this->cargar_anotaciones($params);
-						break;
-					case 'actualizar_anotacion' :
-						$result = $this->actualizar_anotacion($params);
-						break;				
-					case 'cargar_datos_paginacion' :
-						$result = $this->cargar_datos_paginacion($params);
-						break;
-					case 'borrar_anotacion' :
-						$result = $this->borrar_anotacion($params);
-						break;							
-					case 'get_list' :
-						$result = $this->get_list($params);
-						break;		
-					case 'update_customer' :
-						$result = $this->update_customer($params);
-						break;										
-					}
-			} 
-		}
-		error_log ('Resultado del bucle, $result: '.var_export($result,true));
-
-		echo json_encode($result);
-		exit();
-	}
 
 
-
-   /**
-	 * get_permissions_check
-	 * 
-	 * Method to manage the access permissions to the endpoints
-	 * only administrators can access
-	 *
-	 * @return void
-	 */
-	function get_permissions_check(){
-
-
-	//	$user = wp_get_current_user();
-
-	//	if ( isset( $user->roles ) && is_array( $user->roles ) ) {
-	//		if (! ( in_array('jardinero',$user->roles) || in_array('administrator',$user->roles) || in_array('editor',$user->roles)))
-	//			return new WP_Error( 'rest_forbidden', esc_html__( 'OMG you can not view private data.', 'gsmtc-forms' ), array( 'status' => 401 ) );
-	//	}
-
-	
-		return true;
-	
-	}
 
    /**
      * Method add_block_categories
@@ -981,6 +893,7 @@ class Gsmtc_Forms{
     /**
      * Method to register all endpoints
      */
+    /*
     public function endpoints(){
         register_rest_route( 'gsmtc-forms','simple-contact', array(
                                 'methods'  => WP_REST_Server::EDITABLE,
@@ -991,6 +904,7 @@ class Gsmtc_Forms{
     /**
      *  Method to validate data form forms
      */
+    /*
     public function validate($input){
 
         $result = trim($input);
@@ -1022,56 +936,8 @@ class Gsmtc_Forms{
     }
 
 
-    /**
-     * Method to inicialize gsmtc_forms
-     */
-    public function install_gsmtc_forms(){
-        // Create tables in database, if not exists
-        $this->create_tables();
-        // Create custom styles dir, if not exists
-//        if ( ! is_dir(GSMTC_FORMS_STYLES_DIR) ) mkdir(GSMTC_FORMS_STYLES_DIR);
-//        add_option('gsmtc-forms-block-pattern-version',1);
-                       
-    }
 
-
-    /**
-     * Method to create the database tables
-     */
-    public function create_tables(){
-
-        global $wpdb;
-
-        /**
-         * The forms table stores informatión about the indivudual forms 
-         */
-        $query_forms = "CREATE TABLE IF NOT EXISTS " . $this->table_name_forms . " (
-            id bigint(20) unsigned NOT NULL AUTO_INCREMENT,
-            idform varchar(15)COLLATE utf8mb4_unicode_ci,
-            date varchar (10)COLLATE utf8mb4_unicode_ci,
-            context text COLLATE utf8mb4_unicode_ci,
-                                                
-            PRIMARY KEY (id)
-            ) DEFAULT CHARSET = utf8mb4 COLLATE=utf8mb4_unicode_ci;";
-        
-        /**
-         * The data_forms table stores informatión about the content of every form 
-         */
-        $query_data_forms = "CREATE TABLE IF NOT EXISTS " . $this->table_name_data_forms . " (
-            id bigint(20) unsigned NOT NULL AUTO_INCREMENT,
-            idform bigint(20) unsigned NOT NULL,
-            typedata varchar (50)COLLATE utf8mb4_unicode_ci,
-            namedata varchar (50)COLLATE utf8mb4_unicode_ci,
-            contentdata text COLLATE utf8mb4_unicode_ci,
-            
-            PRIMARY KEY (id)
-            ) DEFAULT CHARSET = utf8mb4 COLLATE=utf8mb4_unicode_ci;";
-
-        $wpdb->query($query_forms);
-        $wpdb->query($query_data_forms);
-
-    }
-
+ 
     /**
      * Method to remove the database tables
      */
