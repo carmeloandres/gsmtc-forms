@@ -28,27 +28,21 @@ class Gsmtc_Forms{
         add_action( 'save_post', array($this,'save_post'),10,3);
         add_action( 'before_delete_post', array($this,'before_delete_post'),10,2);
         add_action( 'add_meta_boxes', array($this,'add_meta_boxes'));
-
-        // hooks at test
+        add_action( 'admin_menu',array($this,'admin_menu'));
         add_filter('default_content', array($this,'default_content'),10,2);
 
 
 
     }
-    function default_content($content, $post){
-//        error_log ('Se ha ejecutado la función "dafault_content", $content : '.var_export($content,true).' , $post :'.var_export($post,true).PHP_EOL);
-        if (($content == '') && ($post->post_type === 'gsmtc-form')){
-            $form_id = time();
-            $content = '<!-- wp:gsmtc-forms/form {"id":"'.$form_id.'"} -->';
-            $content = $content.'<form class="wp-block-gsmtc-forms-form" id="'.$form_id.'"></form>';
-            $content = $content.'<!-- /wp:gsmtc-forms/form -->';
-//            error_log ('Se ha ejecutado la función "dafault_content", $content : '.var_export($content,true).' , $post :'.var_export($post,true).PHP_EOL);
-
-        }
-        
-        return $content;
+ 
+ 
+    function admin_menu(){
+        add_submenu_page('edit.php?post_type=gsmtc-form', 'gsmtc-forms-data',__('Data forms','gsmtc-form'), 'manage_options','gsmtc-forms-data',array($this,'show_data'));
     }
 
+    function show_data(){
+        echo '<h2>Mostrar información de los formularios</h2>';
+    }
 
     /**
      * Method init
@@ -168,10 +162,36 @@ class Gsmtc_Forms{
 
     }
 
+    /**
+     * Metodo: default_content
+     *  
+     * Crea contenido por defecto en el momemnto de crear un nuevo custom post_type del tipo "gsmtc-form"
+     *
+     * Esta función detecta el momento previo a la edición de posts y si el contenido esta vacio y el tipo de post
+     * es "gsmtc-form", añade un bloque de formulario vacio.
+     *
+     * @param string $content El contenido del post.     
+     * @param WP_Post $post El post a eleminar.
+     * @return string El contenido del post, tanto si ha sido modificado como si no.
+     */
+     function default_content($content, $post){
+        //        error_log ('Se ha ejecutado la función "dafault_content", $content : '.var_export($content,true).' , $post :'.var_export($post,true).PHP_EOL);
+                if (($content == '') && ($post->post_type === 'gsmtc-form')){
+                    $form_id = time();
+                    $content = '<!-- wp:gsmtc-forms/form {"id":"'.$form_id.'"} -->';
+                    $content = $content.'<form class="wp-block-gsmtc-forms-form" id="'.$form_id.'"></form>';
+                    $content = $content.'<!-- /wp:gsmtc-forms/form -->';
+        //            error_log ('Se ha ejecutado la función "dafault_content", $content : '.var_export($content,true).' , $post :'.var_export($post,true).PHP_EOL);
+        
+                }
+                
+                return $content;
+            }
+        
     function add_meta_boxes(){
         add_meta_box(
-            'id_del_meta_box',           // ID único del meta box
-            'Título del Meta Box',       // Título del meta box que se mostrará en la página de edición
+            'gsmtc_form_meta_box',           // ID único del meta box
+            'Datos relacionados del formulario',       // Título del meta box que se mostrará en la página de edición
             array($this,'show_gsmtc_metabox'), // Callback para mostrar el contenido del meta box
             'gsmtc-form',                      // Tipo de contenido al que se aplicará el meta box (en este caso, gsmtc-form)
             'normal',                    // Contexto (puedes usar 'normal', 'advanced', o 'side')
@@ -181,13 +201,45 @@ class Gsmtc_Forms{
 
     function show_gsmtc_metabox($post){
            // Recuperar el valor actual del campo personalizado (si existe)
-    $valor_actual = get_post_meta($post->ID, 'nombre_del_meta_field', true);
+    $vector = get_post_meta($post->ID, 'gsmtc_form_posts_list');
+//    error_log ('Se ha ejecutado la función "show_gsmtc_metabox", $vector : '.var_export($vector,true).PHP_EOL);
 
-    // Mostrar el campo de entrada
+    if (is_array($vector) && isset($vector[0])){
     ?>
-    <label for="nombre_del_meta_field">Nombre del Campo:</label>
-    <input type="text" id="nombre_del_meta_field" name="nombre_del_meta_field" value="<?php echo esc_attr($valor_actual); ?>" />
+        <h2>Lista de posts en los que se muestra el formulario</h2>
+        <ul>
     <?php
+        $post_list = $vector[0];
+        foreach($post_list as $post_id){
+            $post_title = $this->get_post_title($post_id);
+            $url_edicion = home_url('wp-admin/post.php?post='.$post_id.'&action=edit');
+            $url_show = home_url($post_title);
+            ?>
+                <li><a href="<?php echo $url_edicion?>">Editar </a> <?php echo $post_title?> <a href="<?php echo $url_show?>">Mostrar </a> </li>
+            <?php
+        }
+        ?>
+            </ul>
+        <?php
+    } else {
+        ?>
+            <h2>Este formulario no se muestra en ningun contenido</h2>
+        <?php
+    }
+
+    }
+
+    function get_post_title($post_id){
+        global $wpdb;
+
+        $table_prefix = $wpdb->prefix;
+        $table_name = $table_prefix.'posts';
+        $query = 'SELECT post_title FROM '.$table_name.' WHERE ID = '.$post_id;
+        $result = $wpdb->get_var($query);
+
+        if ($result !== NULL)
+            return $result;
+        else return '';
     }
 
     /**
