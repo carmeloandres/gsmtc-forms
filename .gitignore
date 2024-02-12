@@ -1,15 +1,2 @@
 node_modules
-gsmtc-checkbox/build
-gsmtc-date/build
-blocks/email/build
-gsmtc-fieldset/build
-blocks/form/build
-blocks/label/build
-gsmtc-noticesend/build
-blocks/main-email/build
-gsmtc-radio/build
-blocks/submit/build
-blocks/text/build
-gsmtc-textarea/build
-package-lock.json
 
