@@ -366,7 +366,7 @@ class Gsmtc_Forms{
 
     function save_post($post_id, $post, $updated){
         
-        if ($updated){
+        if ($updated && ($post->post_type !== 'revision')){
             // Unhook to prevent infinity loop
             remove_action('save_post',array($this,'save_post'),10);
             
@@ -387,8 +387,6 @@ class Gsmtc_Forms{
                             $this->update_form($form, $post_id);
 
                         } else {
-    //                        $form_id = $this->get_form_id($form);
-    //                        $gsmtc_post_id = $this->get_gsmtc_form_post_id($form_id);
                             $post_list = $this->add_id_to_list_if_proceeds($form,$post_id);
     /*                        $encontrado = false;
                             foreach($post_list as $id){
