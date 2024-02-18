@@ -37,3 +37,5 @@ function gsmtc_forms_activate(){
 }
 register_activation_hook(__FILE__,'gsmtc_forms_activate'); 
 
+// text test
+
