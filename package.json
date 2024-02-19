@@ -48,8 +48,8 @@
     "@wordpress/hooks": "^3.48.0",
     "@wordpress/notices": "^4.16.0"
   },
-  "description": "",
   "devDependencies": {
     "@wordpress/scripts": "^27.2.0"
-  }
+  },
+  "description": ""
 }
