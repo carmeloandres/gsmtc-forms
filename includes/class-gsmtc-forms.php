@@ -797,9 +797,9 @@ class Gsmtc_Forms{
                 }
 
                 $gsmtc_form_offset = $gsmtc_form_end_position + 29;
-//                if ( $gsmtc_form_offset >= strlen( $post_content ) ){
-//                    $gsmtc_form_offset = strlen( $post_content ) - 1;
-//                } 
+                if ( $gsmtc_form_offset >= strlen( $post_content ) ){
+                    $gsmtc_form_offset = strlen( $post_content ) - 1;
+                } 
             }
 
         } while ( $gsmtc_form_initial_position !== false );

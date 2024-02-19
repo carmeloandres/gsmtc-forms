@@ -18,6 +18,13 @@
 		},
 		"name":{
 			"type":"string"
+		},
+		"response":{
+			"type":"string",
+			"default":"nothing"
+		},
+		"message":{
+			"type":"string"
 		}
 	}
 }

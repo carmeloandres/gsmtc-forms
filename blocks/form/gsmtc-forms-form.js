@@ -1,3 +1,27 @@
+// función para realizar las acciones en la respuesta al submit de clean
+const onResponseClean = (form) => {
+    let inputs = Array.from(form.querySelectorAll("input"));
+    
+    inputs.forEach(input => {
+        if ( input.type == 'text')
+            input.value = '';
+    })
+    
+}
+// función para realizar las acciones en la respuesta al submit de hide
+const onResponseHide = (form) => {
+    
+    let message = form.getAttribute('data-message');
+    let div = document.createElement("div");
+    div.class = "gsmtc-form-response-message";
+    div.textContent = message;
+
+    let parentElement = form.parentNode;
+    parentElement.replaceChild(div,form);
+    
+}
+
+
 const gsmtcFormsFormSubmit = async (event) => {
     event.preventDefault();
 
@@ -48,34 +72,39 @@ const gsmtcFormsFormSubmit = async (event) => {
         apiData.append('Element'+contador,data);
         console.log ('Elemento ',contador,' : ',element);
         if ((element.type == 'radio') && (element.checked))
-            console.log ('Elemento type :',element.type,'Elemento name : ',element.name,' Elemento value : ',element.value, 'Checked');
-        else
-            console.log ('Elemento type :',element.type,'Elemento name : ',element.name,' Elemento value : ',element.value);
+        console.log ('Elemento type :',element.type,'Elemento name : ',element.name,' Elemento value : ',element.value, 'Checked');
+    else
+    console.log ('Elemento type :',element.type,'Elemento name : ',element.name,' Elemento value : ',element.value);
 
-        contador++;
-    })
-    
+contador++;
+})
 
-    	const resp = await fetch(GsmtcFormsAPI.restUrl,{
-            method:'POST',
-            headers: headers,
-            body:apiData
-        })
-    
-        if (resp.ok){
-            let result = await resp.json();
-    
-            console.log('result :',result);
-            }
+
+const resp = await fetch(GsmtcFormsAPI.restUrl,{
+    method:'POST',
+    headers: headers,
+    body:apiData
+})
+
+if (resp.ok){
+    let result = await resp.json();
+    let response = event.target.getAttribute('data-response');
+    console.log('Response submit :',response);
+    if (response == 'clean')
+        onResponseClean(event.target); 
+    if (response == 'hide')
+        onResponseHide(event.target);   
+    console.log('result :',result);
+}
 
 }
 
 
 window.onload = function (){
- //   console.log('Datos ajax : ',datosAjax);
-
+    //   console.log('Datos ajax : ',datosAjax);
+    
     let formulario = Array.from(document.getElementsByClassName('wp-block-gsmtc-forms-form'));
-        
+    
     formulario.forEach( form => {form.addEventListener('submit',gsmtcFormsFormSubmit)})
 
     console.log('formularios detectados',formulario.length);
