@@ -104,7 +104,7 @@ class Gsmtc_Forms_Api{
 		}
 		error_log ('Resultado del bucle, $result: '.var_export($result,true));
 
-		echo json_encode($result);
+        echo json_encode($result);
 		exit();
 	}
 
@@ -139,9 +139,12 @@ class Gsmtc_Forms_Api{
 //            $result = $wpdb->insert($this->table_name_submited_forms,$submited_form);
             $result = $wpdb->query($query);
 error_log ('Se ha ejecutado "submited_form", $query: '.var_export($query,true).' , $result: '.var_export($result,true).PHP_EOL);
-        }
+error_log ('Se ha ejecutado "submited_form", $date: '.var_export(date('Y-m-d H:m:s'),true).PHP_EOL);
+
+}
 
         return $result;
+            
     }
 
 

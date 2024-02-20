@@ -8,9 +8,11 @@ import { InspectorControls, useBlockProps } from '@wordpress/block-editor';
 import { Panel, PanelBody, TextControl, ToggleControl} from  "@wordpress/components";
 
 export default function Edit({attributes, setAttributes}) {
-	const { name, defaultValue, required, validationPattern, validationMessage } = attributes
+	const { name, defaultValue, required, validationMessage } = attributes
 	const blockProps = useBlockProps();
 	
+	const validationPattern = "^[a-zA-Z0-9\s'\"]+$";
+
 	return (
 		<>
 			<InspectorControls>
@@ -31,13 +33,6 @@ export default function Edit({attributes, setAttributes}) {
                     		checked={required}
                     		onChange={(value) => setAttributes({ required: value })}
                 		/>
-					</PanelBody>
-					<PanelBody title={__('Input text validation ','gsmtc-forms')} initialOpen={false}>
-						<TextControl
-                            label={__('Validation regular pattern','gsmtc-forms')}
-                            value={validationPattern}
-                            onChange={(value) => setAttributes({ validationPattern: value })}
-	            	    />
 						<TextControl
                             label={__('Validation message','gsmtc-forms')}
                             value={validationMessage}
@@ -46,7 +41,7 @@ export default function Edit({attributes, setAttributes}) {
 					</PanelBody>
 				</Panel>
 			</InspectorControls> 
-			<input type="text" {...blockProps} name={name}  required={required} value={defaultValue} pattern={validationPattern} title={validationMessage}/>
+			<input type="text" {...blockProps} name={name}  required={required} value={defaultValue} pattern={"^[a-zA-Z0-9\s'\"\?!]+$"} title={validationMessage}/>
 		</>
 	);
 }

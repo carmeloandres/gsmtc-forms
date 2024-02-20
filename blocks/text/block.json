@@ -12,20 +12,20 @@
 	"style": "file:./build/style-index.css",
 	"attributes": {
 		"name":{
-			"type":"string"
+			"type":"string",
+			"default":""
 		},
 		"defaultValue":{
-			"type":"string"
+			"type":"string",
+			"default":""
 		},
 		"required":{
 			"type":"boolean",
 			"default":false
 		},
-		"validationPattern":{
-			"type":"string"
-		},
 		"validationMessage":{
-			"type":"string"
+			"type":"string",
+			"default":"Letters, numbers, spaces, quotes, question marks and exclamation marks"
 		}
 	}
 }

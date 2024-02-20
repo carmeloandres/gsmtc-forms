@@ -23,8 +23,19 @@
 			"type":"string",
 			"default":"nothing"
 		},
-		"message":{
-			"type":"string"
+		"sendmessage":{
+			"type":"string",
+			"default":"Sending information"
+		},
+		"failmessage":{
+			"type":"string",
+			"default":"Failure to send information"
+		},
+		"successmessage":{
+			"type":"string",
+			"default":"Information sent successfully"
+
 		}
+
 	}
 }

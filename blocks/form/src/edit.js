@@ -5,15 +5,12 @@ import { Button, Panel, PanelBody, TextControl, RadioControl} from  '@wordpress/
 
 export default function Edit({attributes, setAttributes}) {
 
-	const { id, name, response, message } = attributes
+	const { id, name, response, sendmessage, failmessage, successmessage } = attributes
 	const blockProps = useBlockProps();
 	
 	// Habilira o deshabilita el boton para generar un nuevo id del formulario
 	// y por lo tanto un nuevo formulario
 	const [disabledButton, setDisabledButton] = useState(false);
-
-	//Habilita la edición de mensaje en caso de que la acción de respuesta sea "Hide"
-	const [disableText, setDisableText] = useState(false);
 
 	// Esta función se ejecuta para establecer la habilitación del boton de crear nuevo formulario
 	const onUpdateButton = () => {
@@ -37,13 +34,6 @@ export default function Edit({attributes, setAttributes}) {
 			}
 
 	},[])
-	
-	// Establece el estadode la edición de mensaje de respuesta, segun el valor de respuesta
-	useEffect(() => {
-		if (response == 'hide')
-			setDisableText(false)
-		else setDisableText(true)
-	},[response])
 
 	// Esta función genera un nuevo id para el formulario
 	const handleClick = () => {
@@ -93,10 +83,19 @@ export default function Edit({attributes, setAttributes}) {
 							onChange={ (newValue)  => setAttributes( { response: newValue } )}
 						/>
 						<TextControl
-                            label={__('Form message after success submit in "Hide response"','gsmtc-forms')}
-                            value={message}
-							disabled={disableText} // Deshabilita el TextControl
-                            onChange={(value) => setAttributes({ message: value })}
+                            label={__('Message when sending information','gsmtc-forms')}
+                            value={sendmessage}
+                            onChange={(value) => setAttributes({ sendmessage: value })}
+	            	    />
+						<TextControl
+                            label={__('Message when the sending of information fails','gsmtc-forms')}
+                            value={failmessage}
+                            onChange={(value) => setAttributes({ failmessage: value })}
+	            	    />
+						<TextControl
+                            label={__('Message when the sending of information is successful','gsmtc-forms')}
+                            value={successmessage}
+                            onChange={(value) => setAttributes({ successmessage: value })}
 	            	    />
 					</PanelBody>
 				</Panel>
