@@ -104,7 +104,10 @@ export default function Edit({attributes, setAttributes}) {
 			<div>
 			</div>
 			<form {...blockProps} id={id} name={name} >
+				<input type="submit" value="To prevent submit at press enter" hidden={true} disabled={true} />
+
 				<InnerBlocks />
+	
 			</form>
 		</>
 	);

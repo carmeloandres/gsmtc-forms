@@ -1,3 +1,8 @@
+// Variable a modo de bandera para ser utilizado por los manejadores de evento
+// onChange de los input text de los formularios de gsmtc.
+// si la bandera esta a true se permite la modificación del input text, en caso contrario no.
+var gsmtcTextFlag = true;
+
 // función para realizar las acciones en la respuesta al submit de nothing
 const onResponseNothing = (form, message) => {
     let successMessage = form.getAttribute('data-success-message');
@@ -157,18 +162,52 @@ if (resp.ok){
 }
 
 
+const onChangeGsmtcFormText = (event) => {
+    console.log("se ejecuta el manejador");
+    console.log("Class list : ",event.target.classList);
+    console.log("gsmtcTextFlag : ",gsmtcTextFlag)
+    if (event.target.classList.contains("wp-block-gsmtc-forms-text") && (gsmtcTextFlag)){
+        gsmtcTextFlag = false;
+
+        console.log(event.target)
+        // Patrón de validación
+        let patron = /^[a-zA-Z0-9\s'"\?!]+$/;
+        
+    
+        // Verifica si el valor coincide con el patrón
+        let esValido = patron.test(event.target.value);
+    
+        if (esValido){
+            alert("el dato es valido");
+        } else alert("El dato NO es valido");
+
+        gsmtcTextFlag = true;
+    }
+}
 window.onload = function (){
     //   console.log('Datos ajax : ',datosAjax);
     
     let formulario = Array.from(document.getElementsByClassName('wp-block-gsmtc-forms-form'));
     
-    formulario.forEach( form => {form.addEventListener('submit',gsmtcFormsFormSubmit)})
+    formulario.forEach( form => {form.addEventListener('submit',gsmtcFormsFormSubmit)});
 
     console.log('formularios detectados',formulario.length);
 
     console.log ('GsmtcFormsAPI : ',GsmtcFormsAPI);
     console.log ('GsmtcFormsAPI.homeUrl : ',GsmtcFormsAPI.homeUrl);
 
+    // Adding input text onChange handle
+    let contadorInputsTexts = 0;
+    let gsmtcInputTexts = Array.from(document.getElementsByClassName('wp-block-gsmtc-forms-text'));
+
+    gsmtcInputTexts.forEach( gsmtcInputText => {
+        gsmtcInputText.setAttribute("pattern","^[a-zA-Z0-9\s'\"\?!]+$");
+        gsmtcInputText.setAttribute("title","Patron no validado");
+});
+
+//    gsmtcInputTexts.forEach( gsmtcInputText => {gsmtcInputText.addEventListener('change',onChangeGsmtcFormText); contadorInputsTexts++});
+
+    console.log ('Contador de input texts : ',contadorInputsTexts);
     // oculto las notificaciones
     let notices = Array.from(document.getElementsByClassName('wp-block-gsmtc-forms-gsmtc-noticesend'));
 

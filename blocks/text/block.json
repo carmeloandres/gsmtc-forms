@@ -22,7 +22,7 @@
 		"required":{
 			"type":"boolean",
 			"default":false
-		},
+		},	
 		"validationMessage":{
 			"type":"string",
 			"default":"Letters, numbers, spaces, quotes, question marks and exclamation marks"
