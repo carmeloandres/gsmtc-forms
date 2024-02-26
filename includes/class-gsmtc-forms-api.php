@@ -1,6 +1,9 @@
 <?php
  if ( ! defined( 'ABSPATH' ) ) {die;} ; 
 
+  // To get access to the patterns class
+  require_once ('class-gsmtc-forms-patterns.php');  
+
 /**
  * Clase Gsmtc_Forms_Api
  *
@@ -10,7 +13,7 @@
  * @package gsmtc-forms
  * @since 1
  */
-class Gsmtc_Forms_Api{
+class Gsmtc_Forms_Api extends Gsmtc_forms_Patterns{
 
     /**
      * Prefijo utilizado para las tablas propias del plugin.

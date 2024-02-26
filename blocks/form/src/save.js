@@ -15,7 +15,7 @@ export default function save({attributes}) {
 
 	return (
 			<>
-				<form {...blockProps} id={ id } name={ name } data-response={ response } data-send-message={ sendmessage } data-fail-message={ failmessage } data-success-message={ successmessage }>
+				<form {...blockProps} id={ id } name={ name } pattern={"^[a-zA-Z0-9\s'\"\?!]+$"} data-response={ response } data-send-message={ sendmessage } data-fail-message={ failmessage } data-success-message={ successmessage }>
 					<input type="submit" value="To prevent submit at press enter" hidden={true} disabled={true} />
 		
 					<InnerBlocks.Content />

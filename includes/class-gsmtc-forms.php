@@ -1,11 +1,14 @@
 <?php
  if ( ! defined( 'ABSPATH' ) ) {die;} ; 
 
+ // To get access to the patterns class
+ require_once ('class-gsmtc-forms-patterns.php');
+
 /**
  * Class to manage the database
  */
 
-class Gsmtc_Forms{
+class Gsmtc_Forms extends Gsmtc_Forms_Patterns{
 
     public $plugin_prefix;
     public $table_name_forms;
@@ -14,6 +17,8 @@ class Gsmtc_Forms{
        
     function __construct()
     {
+        parent::__construct();
+
         global $wpdb;
 
         $this->plugin_prefix = 'gsmtc_';
@@ -30,11 +35,27 @@ class Gsmtc_Forms{
         add_action( 'add_meta_boxes', array($this,'add_meta_boxes'));
         add_action( 'admin_menu',array($this,'admin_menu'));
         add_filter('default_content', array($this,'default_content'),10,2);
+        add_action('wp_body_open',array($this,"wp_body_open"));
 
 
 
     }
  
+    function wp_body_open(){
+        if (wp_script_is('gsmtc-forms-form-js', 'enqueued')) {
+        ?>
+        	<script type="text/javascript">
+			const GsmtcForms = {
+                "inputTextPattern":"<?php echo $this->input_text_pattern; ?>"
+                "inputTextTitle":"<?php echo $this->input_text_title; ?>"
+
+            };
+
+	</script>
+
+        <?php
+        }
+    }
  
     function admin_menu(){
         add_submenu_page('edit.php?post_type=gsmtc-form', 'gsmtc-forms-data',__('Data forms','gsmtc-form'), 'manage_options','gsmtc-forms-data',array($this,'show_data'));
@@ -149,11 +170,15 @@ class Gsmtc_Forms{
 		    GSMTC_FORMS_URL.'/blocks/form/gsmtc-forms-form.js',
     	);
 
+        error_log ('init method_ - $this->input_text_pattern : '.var_export($this->input_text_pattern,true));
+
         // loads the data to conect to API
         wp_localize_script('gsmtc-forms-form-js','GsmtcFormsAPI',array(
             "restUrl" =>  esc_url_raw(rest_url( '/gsmtc-forms/form' )),
             "nonce" => wp_create_nonce('wp_rest'),
             "homeUrl" => home_url(),
+            "inpuTextPattern" => $this->input_text_pattern,
+            "inputTextTitle" => esc_url_raw("^[a-zA-Z0-9\\s'/\"/\?!]+$"),
         ));
 
         //Registers the blocks styles

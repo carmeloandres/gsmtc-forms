@@ -12,6 +12,6 @@ export default function save({attributes}) {
 	const blockProps = useBlockProps.save();
 
 	return (
-		<input type="text" {...blockProps} value={defaultValue} name={name}  required={required} pattern={"^[a-zA-Z0-9\s'\"\?!]+$"} title={validationMessage}/>
+		<input type="text" {...blockProps} value={defaultValue} name={name}  required={required} pattern={"^[a-zA-Z0-9&#47;s'\"\?!]+$"} title={validationMessage}/>
 		);
 }
