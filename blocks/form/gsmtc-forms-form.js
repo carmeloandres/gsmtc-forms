@@ -2,7 +2,7 @@
 // onChange de los input text de los formularios de gsmtc.
 // si la bandera esta a true se permite la modificación del input text, en caso contrario no.
 var gsmtcTextFlag = true;
-var attribute ="^[a-zA-Z0-9\s'\"\?!]+$";
+var attribute ="^[a-zA-Z0-9&#47;s'\"\?!]+$";
 
 // función para realizar las acciones en la respuesta al submit de nothing
 const onResponseNothing = (form, message) => {
@@ -202,10 +202,10 @@ window.onload = function (){
     let gsmtcInputTexts = Array.from(document.getElementsByClassName('wp-block-gsmtc-forms-text'));
 
     gsmtcInputTexts.forEach( gsmtcInputText => {
-//        gsmtcInputText.setAttribute("pattern",GsmtcForms.attribute);
+ //       gsmtcInputText.setAttribute("pattern",GsmtcFormsAPI.inputTextPattern);
 
-//        gsmtcInputText.setAttribute("pattern",GsmtcForms.inputTextPattern);
-  //      gsmtcInputText.setAttribute("title",GsmtcForms.inputTextTitle);
+//        gsmtcInputText.setAttribute("pattern",attribute);
+       gsmtcInputText.setAttribute("title",GsmtcForms.inputTextTitle);
 });
 
 //    gsmtcInputTexts.forEach( gsmtcInputText => {gsmtcInputText.addEventListener('change',onChangeGsmtcFormText); contadorInputsTexts++});

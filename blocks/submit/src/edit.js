@@ -39,7 +39,7 @@ export default function Edit({attributes, setAttributes}) {
 				</Panel>
 			</InspectorControls>
 			<div {...blockProps} >
-				<input  className='wp-element-button' type="submit" value={text} />
+				<input  className='wp-element-button' type="submit" value={text} disabled={true}/>
 			</div>
 		</>
 	);

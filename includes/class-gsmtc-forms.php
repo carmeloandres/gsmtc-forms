@@ -2,13 +2,13 @@
  if ( ! defined( 'ABSPATH' ) ) {die;} ; 
 
  // To get access to the patterns class
- require_once ('class-gsmtc-forms-patterns.php');
+ require_once ('class-gsmtc-forms-translations.php');
 
 /**
  * Class to manage the database
  */
 
-class Gsmtc_Forms extends Gsmtc_Forms_Patterns{
+class Gsmtc_Forms extends Gsmtc_Forms_Translations{
 
     public $plugin_prefix;
     public $table_name_forms;
@@ -46,7 +46,6 @@ class Gsmtc_Forms extends Gsmtc_Forms_Patterns{
         ?>
         	<script type="text/javascript">
 			const GsmtcForms = {
-                "inputTextPattern":"<?php echo $this->input_text_pattern; ?>"
                 "inputTextTitle":"<?php echo $this->input_text_title; ?>"
 
             };
@@ -170,15 +169,11 @@ class Gsmtc_Forms extends Gsmtc_Forms_Patterns{
 		    GSMTC_FORMS_URL.'/blocks/form/gsmtc-forms-form.js',
     	);
 
-        error_log ('init method_ - $this->input_text_pattern : '.var_export($this->input_text_pattern,true));
-
         // loads the data to conect to API
         wp_localize_script('gsmtc-forms-form-js','GsmtcFormsAPI',array(
             "restUrl" =>  esc_url_raw(rest_url( '/gsmtc-forms/form' )),
             "nonce" => wp_create_nonce('wp_rest'),
             "homeUrl" => home_url(),
-            "inpuTextPattern" => $this->input_text_pattern,
-            "inputTextTitle" => esc_url_raw("^[a-zA-Z0-9\\s'/\"/\?!]+$"),
         ));
 
         //Registers the blocks styles

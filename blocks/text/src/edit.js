@@ -8,10 +8,10 @@ import { InspectorControls, useBlockProps } from '@wordpress/block-editor';
 import { Panel, PanelBody, TextControl, ToggleControl} from  "@wordpress/components";
 
 export default function Edit({attributes, setAttributes}) {
-	const { name, defaultValue, required, validationMessage } = attributes
+	const { name, required, placeHolder } = attributes
 	const blockProps = useBlockProps();
 	
-	const validationPattern = "^[a-zA-Z0-9\s'\"]+$";
+	const holder = (placeHolder != '') ? "placeholder="+placeHolder : '';
 
 	return (
 		<>
@@ -24,24 +24,19 @@ export default function Edit({attributes, setAttributes}) {
                             onChange={(value) => setAttributes({ name: value })}
 	            	    />
 						<TextControl
-                            label={__('Default value','gsmtc-forms')}
-                            value={defaultValue}
-                            onChange={(value) => setAttributes({ defaultValue: value })}
+                            label={__('Place holder value','gsmtc-forms')}
+                            value={placeHolder}
+                            onChange={(value) => setAttributes({ placeHolder: value })}
 	            	    />
 						<ToggleControl
 						    label={__('Required','gsmtc-forms')}
                     		checked={required}
                     		onChange={(value) => setAttributes({ required: value })}
                 		/>
-						<TextControl
-                            label={__('Validation message','gsmtc-forms')}
-                            value={validationMessage}
-                            onChange={(value) => setAttributes({ validationMessage: value })}
-	            	    />
 					</PanelBody>
 				</Panel>
 			</InspectorControls> 
-			<input type="text" {...blockProps} name={name}  required={required} value={defaultValue} pattern={"^[a-zA-Z0-9\s'\"\?!]+$"} title={validationMessage}/>
+			<input type="text" {...blockProps} name={name}  required={required}  placeholder={placeHolder} pattern={"^[a-zA-Z0-9\s'\"\?!]+$"} />
 		</>
 	);
 }

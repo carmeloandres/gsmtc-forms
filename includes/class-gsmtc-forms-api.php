@@ -2,7 +2,7 @@
  if ( ! defined( 'ABSPATH' ) ) {die;} ; 
 
   // To get access to the patterns class
-  require_once ('class-gsmtc-forms-patterns.php');  
+  require_once ('class-gsmtc-forms-translations.php');  
 
 /**
  * Clase Gsmtc_Forms_Api
@@ -13,7 +13,7 @@
  * @package gsmtc-forms
  * @since 1
  */
-class Gsmtc_Forms_Api extends Gsmtc_forms_Patterns{
+class Gsmtc_Forms_Api extends Gsmtc_forms_Translations{
 
     /**
      * Prefijo utilizado para las tablas propias del plugin.
@@ -72,7 +72,7 @@ class Gsmtc_Forms_Api extends Gsmtc_forms_Patterns{
 		));
 	}
 
-    	/**
+    /**
 	 * manage_api_request
 	 * 
 	 * This method manage de recuest of the endpoints 
@@ -90,7 +90,7 @@ class Gsmtc_Forms_Api extends Gsmtc_forms_Patterns{
 
             error_log ('Manage_api_request_ - $params : '.var_export($params,true));
             if (isset ($_SERVER))
-                error_log ('Manage_api_request_ - $_SERVER : '.var_export($_SERVER,true));
+//                error_log ('Manage_api_request_ - $_SERVER : '.var_export($_SERVER,true));
             
             if (isset($params['action'])){
 				$action = $params['action'];
@@ -141,10 +141,10 @@ class Gsmtc_Forms_Api extends Gsmtc_forms_Patterns{
             
 //            $result = $wpdb->insert($this->table_name_submited_forms,$submited_form);
             $result = $wpdb->query($query);
-error_log ('Se ha ejecutado "submited_form", $query: '.var_export($query,true).' , $result: '.var_export($result,true).PHP_EOL);
-error_log ('Se ha ejecutado "submited_form", $date: '.var_export(date('Y-m-d H:m:s'),true).PHP_EOL);
+            error_log ('Se ha ejecutado "submited_form", $query: '.var_export($query,true).' , $result: '.var_export($result,true).PHP_EOL);
+            error_log ('Se ha ejecutado "submited_form", $date: '.var_export(date('Y-m-d H:m:s'),true).PHP_EOL);
 
-}
+        }
 
         return $result;
             

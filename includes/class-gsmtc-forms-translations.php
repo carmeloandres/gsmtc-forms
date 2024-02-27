@@ -1,13 +1,12 @@
 <?php
 
 /**
- * Gsmtc_Forms_Patterns
+ * Gsmtc_Forms_Translations
  * 
  * This class manage the validation pattern to use in frontend and in backend
  */
-class Gsmtc_Forms_Patterns{
+class Gsmtc_Forms_Translations{
 
-	public $input_text_pattern;
     public $input_text_title;
 	public $expresion_nombre;
 	public $expresion_fecha;
@@ -18,9 +17,7 @@ class Gsmtc_Forms_Patterns{
 	public $expresion_colorhexadecimal;
 
 	function __construct(){
-
-		$this->input_text_pattern ="^[a-zA-Z0-9\s'\"\?!]+$"; //in frontend"^[a-zA-Z0-9\s'\"\?!]+$"
-        $this->input_text_title = __("Letters, numbers, question marks and exclamation marks","gsmtc-forms");
+        $this->input_text_title = __("The string must be between 0 and 249 characters and cannot contain '>' or '<'","gsmtc-forms");
 		$this->expresion_nombre = '/^[a-zñA-ZÑáéíóú0-9\' -]{0,120}$/';
 		$this->expresion_fecha = '/^[2][0][0-9]{2}-[0-1][0-9]-[0-3][0-9]$/';
 		$this->expresion_texto = '/^[\n\r0-9a-zñA-ZÑáéíóúºª ,-.:\/\(\)\']{0,200}$/';
