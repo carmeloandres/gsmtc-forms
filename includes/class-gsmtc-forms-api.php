@@ -128,7 +128,7 @@ class Gsmtc_Forms_Api extends Gsmtc_forms_Translations{
         if (isset($params['formId']) && isset($params['formName']) && isset($params['originUrl']) && isset($params['userAgent'])){
 
             $context = maybe_serialize(array('originUrl' => sanitize_text_field($params['originUrl']), 'userAgent' => sanitize_text_field($params['userAgent'])));
-
+/*
             $submited_form = array(
                 'idform' => sanitize_text_field($params['formId']),
                 'formname' => sanitize_text_field($params['formName']),
@@ -137,11 +137,17 @@ class Gsmtc_Forms_Api extends Gsmtc_forms_Translations{
                'context' => $context               
             );
 
+$wpdb->show_errors();
+*/
+
+
             $query = "INSERT INTO ".$this->table_name_submited_forms." (idform, formname, date, email, context) VALUES ('".sanitize_text_field($params['formId'])."','".sanitize_text_field($params['formName'])."','".date('Y-m-d H:m:s')."','','".$context."')";
             
 //            $result = $wpdb->insert($this->table_name_submited_forms,$submited_form);
             $result = $wpdb->query($query);
-            error_log ('Se ha ejecutado "submited_form", $query: '.var_export($query,true).' , $result: '.var_export($result,true).PHP_EOL);
+error_log ('Se ha ejecutado "submited_form", $query: '.var_export($query,true).' , $result: '.var_export($result,true).PHP_EOL);
+//$wpdb->print_error();
+//error_log ('Se ha ejecutado "submited_form", $submited_form: '.var_export($submited_form,true).' , $result: '.var_export($result,true).PHP_EOL);
             error_log ('Se ha ejecutado "submited_form", $date: '.var_export(date('Y-m-d H:m:s'),true).PHP_EOL);
 
         }
