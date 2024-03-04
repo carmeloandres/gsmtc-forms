@@ -122,13 +122,21 @@ class Gsmtc_Forms_Api extends Gsmtc_forms_Translations{
      */
     function submitted_form($params){
         global $wpdb;
-
+        
         $result = 0;
-
+        
         if (isset($params['formId']) && isset($params['formName']) && isset($params['originUrl']) && isset($params['userAgent'])){
-
+            
             $context = maybe_serialize(array('originUrl' => sanitize_text_field($params['originUrl']), 'userAgent' => sanitize_text_field($params['userAgent'])));
-/*
+            
+            $counter = 0;
+            $identifier = 'Element'.$counter; 
+            while ( isset($params[$identifier])){
+                error_log ('Se ha ejecutado "submited_form", $identifier: '.var_export($identifier,true).' field content'.var_export($params[$identifier],true).' field type :'.gettype($params[$identifier]).PHP_EOL);
+                $counter++;
+                $identifier = 'Element'.$counter; 
+            }    
+
             $submited_form = array(
                 'idform' => sanitize_text_field($params['formId']),
                 'formname' => sanitize_text_field($params['formName']),
@@ -137,18 +145,30 @@ class Gsmtc_Forms_Api extends Gsmtc_forms_Translations{
                'context' => $context               
             );
 
-$wpdb->show_errors();
-*/
+// Insertar los datos en la tabla
+//            $result = $wpdb->insert($tabla, $datos_a_insertar, $formato_datos);
 
 
-            $query = "INSERT INTO ".$this->table_name_submited_forms." (idform, formname, date, email, context) VALUES ('".sanitize_text_field($params['formId'])."','".sanitize_text_field($params['formName'])."','".date('Y-m-d H:m:s')."','','".$context."')";
+//            $query = "INSERT INTO ".$this->table_name_submited_forms." (idform, formname, date, email, context) VALUES ('".sanitize_text_field($params['formId'])."','".sanitize_text_field($params['formName'])."','".date('Y-m-d H:m:s')."','','".$context."')";
             
-//            $result = $wpdb->insert($this->table_name_submited_forms,$submited_form);
-            $result = $wpdb->query($query);
-error_log ('Se ha ejecutado "submited_form", $query: '.var_export($query,true).' , $result: '.var_export($result,true).PHP_EOL);
+            $result = $wpdb->insert($this->table_name_submited_forms,$submited_form);
+            //$result = $wpdb->query($query);
+error_log ('Se ha ejecutado "submited_form", $submited_form: '.var_export($submited_form,true).' , $result: '.var_export($result,true).PHP_EOL);
 //$wpdb->print_error();
 //error_log ('Se ha ejecutado "submited_form", $submited_form: '.var_export($submited_form,true).' , $result: '.var_export($result,true).PHP_EOL);
-            error_log ('Se ha ejecutado "submited_form", $date: '.var_export(date('Y-m-d H:m:s'),true).PHP_EOL);
+
+            if ($result === false) {
+                // Ocurrió un error durante la inserción
+                $mensaje_error = $wpdb->last_error;
+                error_log("Error al insertar en la tabla : $mensaje_error");
+            } else {
+                // Inserción exitosa
+                $nueva_fila_id = $wpdb->insert_id;
+                // Puedes realizar acciones adicionales si es necesario
+                error_log("Datos insertados correctamente id del registro: $nueva_fila_id");
+            }
+
+
 
         }
 
@@ -206,7 +226,7 @@ error_log ('Se ha ejecutado "submited_form", $query: '.var_export($query,true).'
             id bigint(20) unsigned NOT NULL AUTO_INCREMENT,
             idform varchar(15)COLLATE utf8mb4_unicode_520_ci,
             formname varchar (256)COLLATE utf8mb4_unicode_520_ci,
-            date varchar (10)COLLATE utf8mb4_unicode_520_ci,
+            date varchar (20)COLLATE utf8mb4_unicode_520_ci,
             email varchar (256)COLLATE utf8mb4_unicode_520_ci,
             context text COLLATE utf8mb4_unicode_520_ci,
                                                 

@@ -1,8 +1,8 @@
 // Variable a modo de bandera para ser utilizado por los manejadores de evento
 // onChange de los input text de los formularios de gsmtc.
 // si la bandera esta a true se permite la modificación del input text, en caso contrario no.
-var gsmtcTextFlag = true;
-var attribute ="^[a-zA-Z0-9&#47;s'\"\?!]+$";
+//var gsmtcTextFlag = true;
+//var attribute ="^[a-zA-Z0-9&#47;s'\"\?!]+$";
 
 // función para realizar las acciones en la respuesta al submit de nothing
 const onResponseNothing = (form, message) => {
@@ -31,8 +31,13 @@ const onResponseClean = (form, message) => {
     let inputs = Array.from(form.querySelectorAll("input"));
     
     inputs.forEach(input => {
-        if ( input.type == 'text')
-            input.value = '';
+
+        switch(input.type){
+            case 'text':
+            case 'email':
+                input.value = '';
+                break;
+        }
     })
 
     setTimeout(() => {message.remove()},6000);	
@@ -100,9 +105,7 @@ const gsmtcFormsFormSubmit = async (event) => {
             console.log(input);
         }
     })
-    
-    
-    
+      
     let elements = Array.from(event.target.elements);
     let contador = 0;
     
@@ -112,6 +115,7 @@ const gsmtcFormsFormSubmit = async (event) => {
 
     let field;
     let data;
+    let attribute;
 
     let apiData = new FormData();
         apiData.append('action','submitted_form');
@@ -121,20 +125,39 @@ const gsmtcFormsFormSubmit = async (event) => {
         apiData.append('userAgent',navigator.userAgent);
     
     elements.forEach(element => {
-        if ((element.type == 'radio') && (element.checked))
-            field = [element.type, element.name, element.value, 'checked']
-        else
-            field = [element.type, element.name, element.value]
 
-        data = JSON.stringify(field);
-        apiData.append('Element'+contador,data);
-        console.log ('Elemento ',contador,' : ',element);
-        if ((element.type == 'radio') && (element.checked))
-        console.log ('Elemento type :',element.type,'Elemento name : ',element.name,' Elemento value : ',element.value, 'Checked');
-    else
-    console.log ('Elemento type :',element.type,'Elemento name : ',element.name,' Elemento value : ',element.value);
+        switch (element.type) {
+            case "email":
+                attribute = element.getAttribute('data-main-email');
+                field = [element.type, element.name, element.value, (attribute == "true") ? 'main' : '']
+              break;
+            case "radio":
+                if ((element.checked))
+                    field = [element.type, element.name, element.value, 'checked']
+                else
+                    field = [element.type, element.name, element.value]
+            default:
+                field = [element.type, element.name, element.value]
+                break;
+          }
+          
+//          if ((element.type == 'radio') && (element.checked))
+  //          field = [element.type, element.name, element.value, 'checked']
+    //else
+      //      field = [element.type, element.name, element.value]
 
-contador++;
+          if (element.type != "submit"){
+              data = JSON.stringify(field);
+              apiData.append('Element'+contador,data);
+              contador++;
+          }
+
+//        console.log ('Elemento ',contador,' : ',element);
+//        if ((element.type == 'radio') && (element.checked))
+//        console.log ('Elemento type :',element.type,'Elemento name : ',element.name,' Elemento value : ',element.value, 'Checked');
+//    else
+//    console.log ('Elemento type :',element.type,'Elemento name : ',element.name,' Elemento value : ',element.value);
+
 })
 
 
@@ -147,7 +170,6 @@ const resp = await fetch(GsmtcFormsAPI.restUrl,{
 if (resp.ok){
     let result = await resp.json();
     let response = event.target.getAttribute('data-response');
-    console.log('Response submit :',response);
     if (response == 'nothing')
         onResponseNothing(event.target, message);
     if (response == 'clean')
@@ -163,56 +185,35 @@ if (resp.ok){
 }
 
 
-const onChangeGsmtcFormText = (event) => {
-    console.log("se ejecuta el manejador");
-    console.log("Class list : ",event.target.classList);
-    console.log("gsmtcTextFlag : ",gsmtcTextFlag)
-    if (event.target.classList.contains("wp-block-gsmtc-forms-text") && (gsmtcTextFlag)){
-        gsmtcTextFlag = false;
-
-        console.log(event.target)
-        // Patrón de validación
-        let patron = /^[a-zA-Z0-9\s'"\?!]+$/;
-        
-    
-        // Verifica si el valor coincide con el patrón
-        let esValido = patron.test(event.target.value);
-    
-        if (esValido){
-            alert("el dato es valido");
-        } else alert("El dato NO es valido");
-
-        gsmtcTextFlag = true;
-    }
-}
 window.onload = function (){
     //   console.log('Datos ajax : ',datosAjax);
     
+    // Adding the submit handler to all gsmtc-forms
     let formulario = Array.from(document.getElementsByClassName('wp-block-gsmtc-forms-form'));
     
     formulario.forEach( form => {form.addEventListener('submit',gsmtcFormsFormSubmit)});
 
-    console.log('formularios detectados',formulario.length);
+        console.log('formularios detectados',formulario.length);
 
-    console.log ('GsmtcFormsAPI : ',GsmtcFormsAPI);
-    console.log ('GsmtcFormsAPI.homeUrl : ',GsmtcFormsAPI.homeUrl);
+//        console.log ('GsmtcFormsAPI : ',GsmtcFormsAPI);
 
-    // Adding input text onChange handle
-    let contadorInputsTexts = 0;
+    // Adding translation titles to the input text
     let gsmtcInputTexts = Array.from(document.getElementsByClassName('wp-block-gsmtc-forms-text'));
 
     gsmtcInputTexts.forEach( gsmtcInputText => {
- //       gsmtcInputText.setAttribute("pattern",GsmtcFormsAPI.inputTextPattern);
+        gsmtcInputText.setAttribute("title",GsmtcForms.inputTextTitle);
+    });
 
-//        gsmtcInputText.setAttribute("pattern",attribute);
-       gsmtcInputText.setAttribute("title",GsmtcForms.inputTextTitle);
-});
+    // Adding translation titles to the input text
+    let gsmtcInputEmails = Array.from(document.getElementsByClassName('wp-block-gsmtc-forms-email'));
 
-//    gsmtcInputTexts.forEach( gsmtcInputText => {gsmtcInputText.addEventListener('change',onChangeGsmtcFormText); contadorInputsTexts++});
+    gsmtcInputEmails.forEach( gsmtcInputEmail => {
+        gsmtcInputEmail.setAttribute("title",GsmtcForms.inputEmailTitle);
+    });
 
-    console.log ('Contador de input texts : ',contadorInputsTexts);
-    // oculto las notificaciones
-    let notices = Array.from(document.getElementsByClassName('wp-block-gsmtc-forms-gsmtc-noticesend'));
+
+        // oculto las notificaciones
+        let notices = Array.from(document.getElementsByClassName('wp-block-gsmtc-forms-gsmtc-noticesend'));
 
         notices.forEach( (notice) => {
             notice.style.display = 'none';

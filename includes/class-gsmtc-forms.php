@@ -46,8 +46,8 @@ class Gsmtc_Forms extends Gsmtc_Forms_Translations{
         ?>
         	<script type="text/javascript">
 			const GsmtcForms = {
-                "inputTextTitle":"<?php echo $this->input_text_title; ?>"
-
+                "inputTextTitle":"<?php echo $this->input_text_title; ?>",
+                "inputEmailTitle":"<?php echo $this->input_email_title; ?>"
             };
 
 	</script>

@@ -8,11 +8,9 @@ import { InspectorControls, useBlockProps } from '@wordpress/block-editor';
 import { Panel, PanelBody, TextControl, ToggleControl} from  "@wordpress/components";
 
 export default function Edit({attributes, setAttributes}) {
-	const { name, required, placeHolder } = attributes
+	const { name, placeHolder, required } = attributes
 	const blockProps = useBlockProps();
 	
-	const holder = (placeHolder != '') ? "placeholder="+placeHolder : '';
-
 	return (
 		<>
 			<InspectorControls>

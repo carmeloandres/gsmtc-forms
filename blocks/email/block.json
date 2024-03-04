@@ -14,9 +14,17 @@
 		"name":{
 			"type":"string"
 		},
+		"placeHolder":{
+			"type":"string",
+			"default":""
+		},
 		"required":{
 			"type":"boolean",
-			"default":false
+			"default":true
+		},
+		"main":{
+			"type":"boolean",
+			"default":true
 		}
 	}
 }
