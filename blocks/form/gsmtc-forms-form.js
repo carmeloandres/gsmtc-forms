@@ -134,19 +134,15 @@ const gsmtcFormsFormSubmit = async (event) => {
               break;
             case "radio":
                 if ((element.checked))
-                    field = [element.type, element.name, element.value, 'checked']
+                    field = [element.type, element.name+'_'+element.value, 'on']
                 else
-                    field = [element.type, element.name, element.value]
+                    field = [element.type, element.name+'_'+element.value, 'off']
+                break;
             default:
                 field = [element.type, element.name, element.value]
                 break;
           }
           
-//          if ((element.type == 'radio') && (element.checked))
-  //          field = [element.type, element.name, element.value, 'checked']
-    //else
-      //      field = [element.type, element.name, element.value]
-
           if (element.type != "submit"){
               data = JSON.stringify(field);
               apiData.append('Element'+contador,data);
@@ -212,6 +208,13 @@ window.onload = function (){
         gsmtcInputEmail.setAttribute("title",GsmtcForms.inputEmailTitle);
     });
 
+    // Adding translation titles to the input text
+    let gsmtcInputTextareas = Array.from(document.getElementsByClassName('wp-block-gsmtc-forms-textarea'));
+
+    gsmtcInputTextareas.forEach( gsmtcInputTextarea => {
+        gsmtcInputTextarea.setAttribute("title",GsmtcForms.inputTextareaTitle);      
+    });
+    
 
         // oculto las notificaciones
         let notices = Array.from(document.getElementsByClassName('wp-block-gsmtc-forms-gsmtc-noticesend'));

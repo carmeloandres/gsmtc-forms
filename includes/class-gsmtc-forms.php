@@ -47,7 +47,8 @@ class Gsmtc_Forms extends Gsmtc_Forms_Translations{
         	<script type="text/javascript">
 			const GsmtcForms = {
                 "inputTextTitle":"<?php echo $this->input_text_title; ?>",
-                "inputEmailTitle":"<?php echo $this->input_email_title; ?>"
+                "inputEmailTitle":"<?php echo $this->input_email_title; ?>",
+                "inputTextareaTitle":"<?php echo $this->input_textarea_title; ?>"
             };
 
 	</script>
@@ -117,10 +118,10 @@ class Gsmtc_Forms extends Gsmtc_Forms_Translations{
         register_block_type( GSMTC_FORMS_DIR.'/blocks/label');
 //        register_block_type( GSMTC_FORMS_DIR.'/gsmtc-noticesend');
 //        register_block_type( GSMTC_FORMS_DIR.'/blocks/main-email');
-//        register_block_type( GSMTC_FORMS_DIR.'/gsmtc-radio');
+        register_block_type( GSMTC_FORMS_DIR.'/blocks/radio');
         register_block_type( GSMTC_FORMS_DIR.'/blocks/submit');
         register_block_type( GSMTC_FORMS_DIR.'/blocks/text');
-//        register_block_type( GSMTC_FORMS_DIR.'/gsmtc-textarea');
+        register_block_type( GSMTC_FORMS_DIR.'/blocks/textarea');
     
         // Register the "Gesimatica forms" block pattern category
         register_block_pattern_category(

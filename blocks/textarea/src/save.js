@@ -12,7 +12,7 @@ export default function save({attributes}) {
 	const blockProps = useBlockProps.save();
 
 	return (
-		<textarea name={name} {...blockProps}   cols={cols} placeholder={placeholder} required={required} rows={rows}>
+		<textarea {...blockProps} name={name} cols={cols} placeholder={placeholder} required={required} rows={rows} pattern={"^[^><]{0,249}$"}>
 		</textarea>
 	);
 }
