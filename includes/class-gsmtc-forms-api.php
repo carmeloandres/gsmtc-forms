@@ -127,32 +127,23 @@ class Gsmtc_Forms_Api extends Gsmtc_forms_Translations{
         
         if (isset($params['formId']) && isset($params['formName']) && isset($params['originUrl']) && isset($params['userAgent'])){
             
-            $context = maybe_serialize(array('originUrl' => sanitize_text_field($params['originUrl']), 'userAgent' => sanitize_text_field($params['userAgent'])));
             
-            $counter = 0;
-            $identifier = 'Element'.$counter; 
-            while ( isset($params[$identifier])){
-                error_log ('Se ha ejecutado "submited_form", $identifier: '.var_export($identifier,true).' field content'.var_export($params[$identifier],true).' field type :'.gettype($params[$identifier]).PHP_EOL);
-                $counter++;
-                $identifier = 'Element'.$counter; 
-            }    
+            $elements = $this->get_elements($params);
+            $main_email = $this->get_main_email($elements);  // email sanitizado
+            error_log ('Se ha ejecutado "submited_form", $elements: '.var_export($elements,true).PHP_EOL);
+            
+            $context = maybe_serialize(array('originUrl' => sanitize_text_field($params['originUrl']), 'userAgent' => sanitize_text_field($params['userAgent'])));
 
             $submited_form = array(
                 'idform' => sanitize_text_field($params['formId']),
                 'formname' => sanitize_text_field($params['formName']),
                 'date' => date('Y-m-d H:m:s'),
-                'email' => '',
+                'email' => $main_email,
                'context' => $context               
             );
 
-// Insertar los datos en la tabla
-//            $result = $wpdb->insert($tabla, $datos_a_insertar, $formato_datos);
-
-
-//            $query = "INSERT INTO ".$this->table_name_submited_forms." (idform, formname, date, email, context) VALUES ('".sanitize_text_field($params['formId'])."','".sanitize_text_field($params['formName'])."','".date('Y-m-d H:m:s')."','','".$context."')";
-            
             $result = $wpdb->insert($this->table_name_submited_forms,$submited_form);
-            //$result = $wpdb->query($query);
+
 error_log ('Se ha ejecutado "submited_form", $submited_form: '.var_export($submited_form,true).' , $result: '.var_export($result,true).PHP_EOL);
 //$wpdb->print_error();
 //error_log ('Se ha ejecutado "submited_form", $submited_form: '.var_export($submited_form,true).' , $result: '.var_export($result,true).PHP_EOL);
@@ -163,9 +154,10 @@ error_log ('Se ha ejecutado "submited_form", $submited_form: '.var_export($submi
                 error_log("Error al insertar en la tabla : $mensaje_error");
             } else {
                 // Inserción exitosa
-                $nueva_fila_id = $wpdb->insert_id;
+                $submited_id = $wpdb->insert_id;
+                $this->insert_elements($elements,$submited_id);
                 // Puedes realizar acciones adicionales si es necesario
-                error_log("Datos insertados correctamente id del registro: $nueva_fila_id");
+                error_log("Datos insertados correctamente id del registro: $submited_id");
             }
 
 
@@ -177,7 +169,139 @@ error_log ('Se ha ejecutado "submited_form", $submited_form: '.var_export($submi
     }
 
 
-   /**
+
+    /**
+	 * get_elements
+	 * 
+	 * Method to manage the access permissions to the endpoints
+	 * only administrators can access
+	 *
+     * @param array Un array generado por la recepción con los parametros de la petición en la cual se incluye la información de 
+     *              los elementos del formulario.
+	 * @return array Un array de arrays que los cuales contienen la información de cada elemento enviado
+	 */
+	function get_elements($params){
+        $resultado = array();
+
+        $counter = 0;
+        $identifier = 'Element'.$counter; 
+        $expresionRegular = '/"([^"]+)"/';
+
+        while ( isset($params[$identifier])){
+                        
+            preg_match_all($expresionRegular, $params[$identifier], $coincidencias);
+            
+            if (!empty($coincidencias[1])) {
+                    $resultado[] = $coincidencias[1];
+            }
+
+            $counter++;
+            $identifier = 'Element'.$counter; 
+        }    
+
+
+        return $resultado;
+    }
+
+    /**
+	 * get_main_email
+	 * 
+	 * Metodo para obtener de un array de elementos, generado por la función get_elements,
+     * el email principal, si existe.
+	 *
+     * @param array Un array generado por la función get_elements 
+     *              
+	 * @return string Una cadena con el email principal, o vacia si no existe.
+	 */
+	function get_main_email($elements){
+        $main_email = '';
+        $length = count($elements);
+        $counter = 0;
+        while (($counter < $length) && ($main_email == '')){
+            if (isset($elements[$counter][0]) && isset($elements[$counter][3]))
+                if (($elements[$counter][0] == 'email') && ($elements[$counter][3] == 'main'))
+                    $main_email = sanitize_email($elements[$counter][2]);
+
+            $counter++;
+        }
+
+        return $main_email;
+    }
+
+    /**
+	 * insert_elements
+	 * 
+	 * Metodo para obtener de un array de elementos, generado por la función get_elements,
+     * el email principal, si existe.
+	 *
+     * @param array Un array generado por la función get_elements, con los elementos a insertar 
+     * @param int El id del registro de información general del formulario enviado al que se relacionan los elementos 
+     *              
+	 * @return string Una cadena con el email principal, o vacia si no existe.
+	 */
+	function insert_elements($elements,$id){
+
+        global $wpdb;
+
+        foreach($elements as $element){
+
+            $data = array(
+                'idsubmit' => $id,
+                'typedata' => sanitize_text_field($element[0]),
+                'namedata' => sanitize_text_field($element[1]),
+                'contentdata' => sanitize_text_field($element[2])                    
+            );
+            switch($element[0]){
+                case 'checkbox':
+                    $data = array(
+                        'idsubmit' => $id,
+                        'typedata' => 'checkbox',
+                        'namedata' => sanitize_text_field($element[1]),
+                        'contentdata' => sanitize_text_field($element[2])                    
+                    );
+                    break;
+                case 'text':
+                    $data = array(
+                        'idsubmit' => $id,
+                        'typedata' => 'text',
+                        'namedata' => sanitize_text_field($element[1]),
+                        'contentdata' => sanitize_text_field($element[2])                    
+                    );
+                    break;
+                case 'email':
+                    $typedata = 'email';
+                    if (isset($element[3]) && ($element[3] == 'main'))
+                        $typedata = 'email_main';
+                    $data = array(
+                        'idsubmit' => $id,
+                        'typedata' => $typedata,
+                        'namedata' => sanitize_text_field($element[1]),
+                        'contentdata' => sanitize_email($element[2])                    
+                    );
+                    break;
+            }
+
+            $result = $wpdb->insert($this->table_name_data_forms,$data);
+
+            error_log ('Se ha ejecutado "insert_elements", $data: '.var_export($data,true).' , $result: '.var_export($result,true).PHP_EOL);
+
+            if ($result === false) {
+                // Ocurrió un error durante la inserción
+                $mensaje_error = $wpdb->last_error;
+                error_log("Error al insertar en la tabla : $mensaje_error");
+            } else {
+                // Inserción exitosa
+                $data_id = $wpdb->insert_id;
+                // Puedes realizar acciones adicionales si es necesario
+                error_log("Datos insertados correctamente id del registro: $data_id");
+            }
+
+        }
+
+    }
+
+
+  /**
 	 * get_permissions_check
 	 * 
 	 * Method to manage the access permissions to the endpoints

@@ -109,14 +109,14 @@ class Gsmtc_Forms extends Gsmtc_Forms_Translations{
         
         // Register the gsmtc-forms blocks using the block api v2
        
-//        register_block_type( GSMTC_FORMS_DIR.'/gsmtc-checkbox');
+        register_block_type( GSMTC_FORMS_DIR.'/blocks/checkbox');
 //        register_block_type( GSMTC_FORMS_DIR.'/gsmtc-date');
         register_block_type( GSMTC_FORMS_DIR.'/blocks/email');
 //        register_block_type( GSMTC_FORMS_DIR.'/gsmtc-fieldset');
         register_block_type( GSMTC_FORMS_DIR.'/blocks/form');
         register_block_type( GSMTC_FORMS_DIR.'/blocks/label');
 //        register_block_type( GSMTC_FORMS_DIR.'/gsmtc-noticesend');
-        register_block_type( GSMTC_FORMS_DIR.'/blocks/main-email');
+//        register_block_type( GSMTC_FORMS_DIR.'/blocks/main-email');
 //        register_block_type( GSMTC_FORMS_DIR.'/gsmtc-radio');
         register_block_type( GSMTC_FORMS_DIR.'/blocks/submit');
         register_block_type( GSMTC_FORMS_DIR.'/blocks/text');

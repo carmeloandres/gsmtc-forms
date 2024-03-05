@@ -1,8 +1,3 @@
-// Variable a modo de bandera para ser utilizado por los manejadores de evento
-// onChange de los input text de los formularios de gsmtc.
-// si la bandera esta a true se permite la modificación del input text, en caso contrario no.
-//var gsmtcTextFlag = true;
-//var attribute ="^[a-zA-Z0-9&#47;s'\"\?!]+$";
 
 // función para realizar las acciones en la respuesta al submit de nothing
 const onResponseNothing = (form, message) => {
@@ -127,6 +122,12 @@ const gsmtcFormsFormSubmit = async (event) => {
     elements.forEach(element => {
 
         switch (element.type) {
+            case "checkbox":
+                if (element.checked)
+                    field = [element.type, element.name, 'on']
+                else
+                    field = [element.type, element.name, 'off']
+                break;
             case "email":
                 attribute = element.getAttribute('data-main-email');
                 field = [element.type, element.name, element.value, (attribute == "true") ? 'main' : '']
