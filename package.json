@@ -35,7 +35,7 @@
     "build:radio": "wp-scripts build ./blocks/radio/src/index.js --output-path=./blocks/radio/build",
     "start:radio": "wp-scripts start ./blocks/radio/src/index.js --output-path=./blocks/radio/build",
     "build:text": "wp-scripts build ./blocks/text/src/index.js --output-path=./blocks/text/build",
-    "start:text": "wp-scripts start ./blockstext/src/index.js --output-path=./blocks/text/build",
+    "start:text": "wp-scripts start ./blocks/text/src/index.js --output-path=./blocks/text/build",
     "build:textarea": "wp-scripts build ./blocks/textarea/src/index.js --output-path=./blocks/textarea/build",
     "start:textarea": "wp-scripts start ./blocks/textarea/src/index.js --output-path=./blocks/textarea/build",
     "build:submit": "wp-scripts build ./blocks/submit/src/index.js --output-path=./blocks/submit/build",

@@ -1,0 +1,21 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Gsmtc Forms Admin</title>
+  </head>
+  <body>
+    <script>
+      const wpApi = {
+        "restUrl":"<?php echo rest_url( '/gsmtc-forms/admin' ); ?>",
+        "nonce":"<?php echo wp_create_nonce('wp_rest') ?>",
+        "homeUrl":"<?php echo home_url() ?>"
+      };
+    </script>
+
+    <div id="gsmtc-forms-admin"></div>
+
+    <script type="module" src="/src/main.jsx"></script>
+  </body>
+</html>

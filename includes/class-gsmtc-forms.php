@@ -19,15 +19,14 @@ class Gsmtc_Forms extends Gsmtc_Forms_Translations{
     {
         parent::__construct();
 
-        global $wpdb;
+/*        global $wpdb;
 
         $this->plugin_prefix = 'gsmtc_';
         $this->table_name_forms = $wpdb->prefix.$this->plugin_prefix.'forms';
         $this->table_name_data_forms = $wpdb->prefix.$this->plugin_prefix.'forms_data';
-
+*/
 
         add_action('init',array($this,'init'));
-//        add_action('rest_api_init',array($this,'rest_api_init')); 
         add_filter('block_categories_all',array($this,'add_block_categories'));
         add_action( 'plugins_loaded',array($this,'load_textdomain'));
         add_action( 'save_post', array($this,'save_post'),10,3);
@@ -37,22 +36,18 @@ class Gsmtc_Forms extends Gsmtc_Forms_Translations{
         add_filter('default_content', array($this,'default_content'),10,2);
         add_action('wp_body_open',array($this,"wp_body_open"));
 
-
-
     }
  
     function wp_body_open(){
         if (wp_script_is('gsmtc-forms-form-js', 'enqueued')) {
         ?>
         	<script type="text/javascript">
-			const GsmtcForms = {
-                "inputTextTitle":"<?php echo $this->input_text_title; ?>",
-                "inputEmailTitle":"<?php echo $this->input_email_title; ?>",
-                "inputTextareaTitle":"<?php echo $this->input_textarea_title; ?>"
-            };
-
-	</script>
-
+                const GsmtcForms = {
+                    "inputTextTitle":"<?php echo $this->input_text_title; ?>",
+                    "inputEmailTitle":"<?php echo $this->input_email_title; ?>",
+                    "inputTextareaTitle":"<?php echo $this->input_textarea_title; ?>"
+                };
+	        </script>
         <?php
         }
     }
@@ -61,8 +56,21 @@ class Gsmtc_Forms extends Gsmtc_Forms_Translations{
         add_submenu_page('edit.php?post_type=gsmtc-form', 'gsmtc-forms-data',__('Data forms','gsmtc-form'), 'manage_options','gsmtc-forms-data',array($this,'show_data'));
     }
 
-    function show_data(){
-        echo '<h2>Mostrar información de los formularios</h2>';
+    function show_data(){     
+        ?>
+        	<script type="text/javascript">
+                const GsmtcFormsAPI = {
+                    "restUrl":"<?php echo esc_url_raw(rest_url( '/gsmtc-forms/admin' )) ?>",
+                    "nonce":"<?php echo wp_create_nonce('wp_rest') ?>",
+                    "homeUrl":"<?php echo home_url(); ?>"
+                };
+	        </script>
+            <div id="gsmtc-forms-admin"></div>
+
+            <h2>Mostrar información de los formularios</h2>
+
+            <script type="module" src="<?php echo GSMTC_FORMS_URL.'assets/js/gsmtc-forms-admin.js' ?>"></script> 
+        <?php
     }
 
     /**
