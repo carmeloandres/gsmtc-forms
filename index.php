@@ -19,7 +19,7 @@ if ( ! defined( 'ABSPATH' ) ) {die;} ; // to prevent direct access
 
 if ( ! defined('GSMTC_FORMS_DIR')) define ('GSMTC_FORMS_DIR',plugin_dir_path(__FILE__));
 if ( ! defined('GSMTC_FORMS_URL')) define ('GSMTC_FORMS_URL',plugin_dir_url(__FILE__));
-if ( ! defined('GSMTC_FORMS_VERSION')) define ('GSMTC_FORMS_VERSION',1);
+if ( ! defined('GSMTC_FORMS_VERSION')) define ('GSMTC_FORMS_VERSION',6);
 
 //if ( ! defined('GSMTC_FORMS_STYLES_DIR')) define ('GSMTC_FORMS_STYLES_DIR', ABSPATH . 'wp-content/gsmtc-forms-styles/');
 

@@ -1,12 +1,19 @@
 import { useState } from 'react'
+import { ApiContext } from "./ApiContext";
+
 
 //import './App.css'
 
-function App() {
+export const GsmtcFormsAdminApp = () => {
+
+  // 
+  const [ api, setApi ] = useState(gsmtcFormsApi);
+
   const [count, setCount] = useState(0)
 
   return (
     <>
+  <ApiContext.Provider value={ { api, setApi }} >
       <h1>Gsmtc forms Admin</h1>
       <div>
         <button onClick={() => setCount((count) => count + 1)}>
@@ -15,9 +22,8 @@ function App() {
         <p>
           Edit <code>src/App.jsx</code> and save to test HMR
         </p>
-      </div>
+      </div>    
+      </ApiContext.Provider>
     </>
   )
 }
-
-export default App

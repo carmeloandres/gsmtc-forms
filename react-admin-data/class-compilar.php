@@ -181,27 +181,25 @@ class Compilar{
 
             $constante = $constante.'_VERSION';
             $cadena_a_buscar = "if ( ! defined('".$constante."')) define ('".$constante."',";
-//            echo 'Cadena a buscar : '.$cadena_a_buscar;
+//              echo 'Cadena a buscar : '.$cadena_a_buscar;
             $longitud_cadena_a_buscar = strlen($cadena_a_buscar);
-            // nombre del fichero inicial del plugin
+//              nombre del fichero inicial del plugin
             $fichero_index = $this->directorio_padre.'/index.php';
             $contenido = file_get_contents($fichero_index);
             $posicion_inicial = strpos($contenido, $cadena_a_buscar);
-            $posicion_siguiente = strpos($contenido,')',$posicion_inicial + $longitud_cadena_a_buscar);
-            $longitud_substring = $posicion_siguiente - ($posicion_inicial + $longitud_cadena_a_buscar);
-            $version = substr($contenido,$posicion_inicial + $longitud_cadena_a_buscar,$longitud_substring);
-            if (is_int(intval($version,10))){
-                $nueva_version = intval($version,10) + 1;
-                $cadena_a_sustituir = $cadena_a_buscar.$version.');';
-                $cadena_substituta = $cadena_a_buscar.$nueva_version.');';
-                $contenido_nuevo = substr_replace($contenido,$cadena_substituta,$posicion_inicial,strlen($cadena_a_sustituir));
-                file_put_contents($fichero_index,$contenido_nuevo);
+
+            if ($posicion_inicial !== false){
+                $posicion_siguiente = strpos($contenido,')',$posicion_inicial + $longitud_cadena_a_buscar);
+                $longitud_substring = $posicion_siguiente - ($posicion_inicial + $longitud_cadena_a_buscar);
+                $version = substr($contenido,$posicion_inicial + $longitud_cadena_a_buscar,$longitud_substring);
+                if (is_int(intval($version,10))){
+                    $nueva_version = intval($version,10) + 1;
+                    $cadena_a_sustituir = $cadena_a_buscar.$version.');';
+                    $cadena_substituta = $cadena_a_buscar.$nueva_version.');';
+                    $contenido_nuevo = substr_replace($contenido,$cadena_substituta,$posicion_inicial,strlen($cadena_a_sustituir));
+                    file_put_contents($fichero_index,$contenido_nuevo);
+                }
             }
-
-//            echo 'version actual :'.$version;
-            
-
         }
-
     }
 }

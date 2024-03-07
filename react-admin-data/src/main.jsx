@@ -1,10 +1,10 @@
 import React from 'react'
 import ReactDOM from 'react-dom/client'
-import App from './App.jsx'
+import { GsmtcFormsAdminApp } from './GsmtcFormsAdminApp'
 //import './index.css'
 
 ReactDOM.createRoot(document.getElementById('gsmtc-forms-admin')).render(
   <React.StrictMode>
-    <App />
+    <GsmtcFormsAdminApp />
   </React.StrictMode>,
 )

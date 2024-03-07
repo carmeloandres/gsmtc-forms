@@ -59,17 +59,14 @@ class Gsmtc_Forms extends Gsmtc_Forms_Translations{
     function show_data(){     
         ?>
         	<script type="text/javascript">
-                const GsmtcFormsAPI = {
+                const gsmtcFormsApi = {
                     "restUrl":"<?php echo esc_url_raw(rest_url( '/gsmtc-forms/admin' )) ?>",
                     "nonce":"<?php echo wp_create_nonce('wp_rest') ?>",
                     "homeUrl":"<?php echo home_url(); ?>"
                 };
 	        </script>
-            <div id="gsmtc-forms-admin"></div>
-
-            <h2>Mostrar información de los formularios</h2>
-
-            <script type="module" src="<?php echo GSMTC_FORMS_URL.'assets/js/gsmtc-forms-admin.js' ?>"></script> 
+            <div id="gsmtc-forms-admin">Ha habido un error el componente no se ha mostrado</div>
+            <script type="module" src="<?php echo GSMTC_FORMS_URL.'assets/js/gsmtc-forms-admin.js?ver='.GSMTC_FORMS_VERSION ?>"></script> 
         <?php
     }
 
