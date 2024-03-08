@@ -2,10 +2,10 @@ import { useState, useEffect } from 'react';
 //import './Pagination.scss';
 
 export const Pagination = ({
-    first, current, last, onClick
+    current, last, onClick
   }) => {
   
-   // obtengo la url de la carpeta de imagenes del plugin
+    const [ first, setFirst] = useState(1);
     const [ firstDisabled, setFirstDisabled ] = useState(true);
     const [ lastDisabled, setLastDisabled ] = useState(true);
   

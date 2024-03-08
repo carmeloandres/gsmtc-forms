@@ -59,6 +59,7 @@ class Gsmtc_Forms extends Gsmtc_Forms_Translations{
     function show_data(){  
         global $api;   
         ?>
+        	<link rel="stylesheet" href="<?php  echo GSMTC_FORMS_URL.'assets/css/gsmtc-forms-admin.min.css?ver='.GSMTC_FORMS_VERSION ?>">
         	<script type="text/javascript">
                 const gsmtcFormsApi = {
                     "restUrl":"<?php echo esc_url_raw(rest_url( '/gsmtc-forms/admin' )) ?>",

@@ -146,10 +146,9 @@ class Gsmtc_Forms_Api extends Gsmtc_forms_Translations{
             
             if (isset($params['action'])){
 				$action = $params['action'];
-//				error_log ('Estamos dentro del bucle, $params: '.var_export($params,true));
 				switch ($action){
-					case 'submitted_form':
-						$result = $this->submitted_form($params);
+					case 'get_data_page':
+						$result = $this->get_data_page($params);
 						break;
 					case 'update_customer' :
 						$result = $this->update_customer($params);
@@ -162,6 +161,31 @@ class Gsmtc_Forms_Api extends Gsmtc_forms_Translations{
         echo json_encode($result);
 		exit();
 	}
+
+    /**
+     * Metodo: get_data_page
+     *  
+     * Obtiene una pagina de los datos generales de los formularios.
+     *
+     * @param array $params La información de la petición.     
+     * @return array un array con la información correspondiente a las filas de los formularios.
+     */
+    function get_data_page($params){
+        global $wpdb;
+
+        $result = array();
+
+        if (isset($params['page'])){
+            $page = $params['page'];
+            $init = ($page - 1 ) * $this->rows_per_page;
+            $query ="SELECT * FROM ".$this->table_name_submited_forms." ORDER BY id DESC LIMIT ".$this->rows_per_page." OFFSET ".$init;
+            $result = $wpdb->get_results($query,ARRAY_A);
+            error_log ('get_data_page - $result : '.var_export($result,true));
+
+        }
+
+        return $result;
+    }
 
     /**
      * Metodo: submitted_form
