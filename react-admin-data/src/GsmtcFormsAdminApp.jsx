@@ -1,6 +1,6 @@
 import { useState } from 'react'
 import { ApiContext } from "./ApiContext";
-
+import { Pagination } from './components';
 
 //import './App.css'
 
@@ -8,6 +8,7 @@ export const GsmtcFormsAdminApp = () => {
 
   // 
   const [ api, setApi ] = useState(gsmtcFormsApi);
+  const [ page , setPage ] = useState(1);
 
   const [count, setCount] = useState(0)
 
@@ -22,8 +23,12 @@ export const GsmtcFormsAdminApp = () => {
         <p>
           Edit <code>src/App.jsx</code> and save to test HMR
         </p>
+        <div class="gsmtc-forms-paginacion">
+          
+        </div>
       </div>    
       </ApiContext.Provider>
+      <Pagination />
     </>
   )
 }

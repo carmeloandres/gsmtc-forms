@@ -56,13 +56,15 @@ class Gsmtc_Forms extends Gsmtc_Forms_Translations{
         add_submenu_page('edit.php?post_type=gsmtc-form', 'gsmtc-forms-data',__('Data forms','gsmtc-form'), 'manage_options','gsmtc-forms-data',array($this,'show_data'));
     }
 
-    function show_data(){     
+    function show_data(){  
+        global $api;   
         ?>
         	<script type="text/javascript">
                 const gsmtcFormsApi = {
                     "restUrl":"<?php echo esc_url_raw(rest_url( '/gsmtc-forms/admin' )) ?>",
                     "nonce":"<?php echo wp_create_nonce('wp_rest') ?>",
-                    "homeUrl":"<?php echo home_url(); ?>"
+                    "homeUrl":"<?php echo home_url(); ?>",
+                    "lastPage":"<?php echo $api->get_last_page(); ?>"
                 };
 	        </script>
             <div id="gsmtc-forms-admin">Ha habido un error el componente no se ha mostrado</div>

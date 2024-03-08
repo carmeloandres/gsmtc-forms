@@ -38,6 +38,13 @@ class Gsmtc_Forms_Api extends Gsmtc_forms_Translations{
     public $table_name_data_forms;
 
     /**
+     * Numero de filas por página.
+     *
+     * @var int
+     */
+    public $rows_per_page;
+
+    /**
      * Constructor de la clase.
      *
      * Establece el valor de las propiedades, añade las acciones necesarias para el funcionamiento de
@@ -49,6 +56,7 @@ class Gsmtc_Forms_Api extends Gsmtc_forms_Translations{
         $this->plugin_prefix = 'gsmtc_';
         $this->table_name_submited_forms = $wpdb->prefix.$this->plugin_prefix.'forms_submited';
         $this->table_name_data_forms = $wpdb->prefix.$this->plugin_prefix.'forms_data';
+        $this->rows_per_page = 10;
    
         add_action('rest_api_init',array($this,'rest_api_init')); 
 
@@ -62,15 +70,22 @@ class Gsmtc_Forms_Api extends Gsmtc_forms_Translations{
 	 * @return void
 	 */
 	function rest_api_init(){
-        // Ruta para gestionar la api de las petciones desde la plantilla jardinero
+        
 		register_rest_route('gsmtc-forms','form',array(
 			'methods'  => 'POST',
-			'callback' => array($this,'manage_api_request'),
-//			'permission_callback' => true			
+			'callback' => array($this,'manage_api_request'),	
 			'permission_callback' => array($this,'get_permissions_check')			
 	
 		));
-	}
+
+        
+		register_rest_route('gsmtc-forms','admin',array(
+			'methods'  => 'POST',
+			'callback' => array($this,'manage_admin_api_request'),	
+			'permission_callback' => array($this,'get_permissions_check')			
+		));
+
+    }
 
     /**
 	 * manage_api_request
@@ -106,6 +121,43 @@ class Gsmtc_Forms_Api extends Gsmtc_forms_Translations{
 			} 
 		}
 		error_log ('Resultado del bucle, $result: '.var_export($result,true));
+
+        echo json_encode($result);
+		exit();
+	}
+
+    /**
+	 * manage_admin_api_request
+	 * 
+	 * This method manage de request of the endpoints from the admin 
+	 *
+	 * @return void
+	 */
+		
+     function manage_admin_api_request(WP_REST_Request $request ){
+
+		$result = json_encode(0);
+
+		if ($request->sanitize_params()){
+
+			$params = $request->get_params();
+
+            error_log ('Manage_admin_api_request_ - $params : '.var_export($params,true));
+            
+            if (isset($params['action'])){
+				$action = $params['action'];
+//				error_log ('Estamos dentro del bucle, $params: '.var_export($params,true));
+				switch ($action){
+					case 'submitted_form':
+						$result = $this->submitted_form($params);
+						break;
+					case 'update_customer' :
+						$result = $this->update_customer($params);
+						break;										
+					}
+			} 
+		}
+        error_log ('Resultado del bucle, $result: '.var_export($result,true));
 
         echo json_encode($result);
 		exit();
@@ -298,6 +350,30 @@ error_log ('Se ha ejecutado "submited_form", $submited_form: '.var_export($submi
 
         }
 
+    }
+
+
+    /**
+	 * get_last_page
+	 * 
+	 * Method to manage the access permissions to the endpoints
+	 * only administrators can access
+	 *
+	 * @return void
+	 */
+	function get_last_page(){
+        global $wpdb;
+        $last_page = 0;
+
+        $query = "SELECT COUNT(*) as total_rows FROM " . $this->table_name_submited_forms;
+        $result = $wpdb->get_results($query,ARRAY_A); 
+        if(isset($result[0]) && isset($result[0]['total_rows']) && intval($result[0]['total_rows']) > 0){
+            $last_page = (int)( $result[0]['total_rows'] / $this->rows_per_page );
+            if (($result[0]['total_rows'] % $this->rows_per_page) !== 0)
+                $last_page++; 
+        }
+
+        return $last_page;
     }
 
 
