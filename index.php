@@ -19,12 +19,11 @@ if ( ! defined( 'ABSPATH' ) ) {die;} ; // to prevent direct access
 
 if ( ! defined('GSMTC_FORMS_DIR')) define ('GSMTC_FORMS_DIR',plugin_dir_path(__FILE__));
 if ( ! defined('GSMTC_FORMS_URL')) define ('GSMTC_FORMS_URL',plugin_dir_url(__FILE__));
-if ( ! defined('GSMTC_FORMS_VERSION')) define ('GSMTC_FORMS_VERSION',16);
+if ( ! defined('GSMTC_FORMS_VERSION')) define ('GSMTC_FORMS_VERSION',42);
 
-//if ( ! defined('GSMTC_FORMS_STYLES_DIR')) define ('GSMTC_FORMS_STYLES_DIR', ABSPATH . 'wp-content/gsmtc-forms-styles/');
-
-require_once(dirname(__FILE__).'/includes/class-gsmtc-forms.php');
-require_once(dirname(__FILE__).'/includes/class-gsmtc-forms-api.php');
+require_once(dirname(__FILE__).'/inc/class-gsmtc-forms.php');
+require_once(dirname(__FILE__).'/inc/class-gsmtc-forms-api.php');
+require_once(dirname(__FILE__).'/inc/gsmtc-forms-admin-translations.php');
 
 $base = new Gsmtc_Forms();
 $api = new Gsmtc_Forms_Api();

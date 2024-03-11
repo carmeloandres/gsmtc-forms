@@ -19,7 +19,6 @@ export const GsmtcFormsAdminApp = () => {
   useEffect(()=>{
     getPage(page);    
   },[page])
-  
   const getPage = async (newPage) => {
 
     // create the header with the nonce token

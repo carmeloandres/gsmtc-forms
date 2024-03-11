@@ -4,6 +4,9 @@
  * compilar
  * 
  * Esta clase contiene toda la funcionalidad para crear la estructura de traducciones en la compilación
+ * Las traducciones en los fichero con extensión .jsx tienen que tener este formato:
+ *      __('cadena a traducir',objetoJavascript)
+ * Especial atención a las comillas simples y el nombre del objeto javascript que sera pasado al html  
  */
 class Compilar{
 
@@ -18,13 +21,17 @@ class Compilar{
         $nombre_directorio_local = substr(pathinfo(__FILE__)['dirname'],$longitud+1);
         $vector = explode('-',$nombre_directorio_local);
         $this->nombre_base = $vector[1];
+        echo 'nombre_base :'.$this->nombre_base.PHP_EOL;
+        echo 'directorio_padre :'.$this->directorio_padre.PHP_EOL;
+        echo 'text_domain : '.$this->text_domain.PHP_EOL;
+    
     }
     
-    function get_translation_args($folder,$text_domain,){
+    function get_translation_args($folder){
         $arguments = array();
-        // file name for translations file.
-        $file_name = $text_domain.'-translations.php';
-        $words = explode('-',$text_domain);
+        // file name for translations file
+        $file_name = $this->text_domain.'-'.$this->nombre_base.'-translations.php';
+        $words = explode('-',$this->text_domain);
         $function_name = '';
         foreach($words as $word){
             if ($function_name == '')
@@ -32,17 +39,19 @@ class Compilar{
             else $function_name = $function_name.'_'.$word;
         }
         $function_name = $function_name.'_translations';
-        $fichero = fopen($folder.'\\'.$file_name,'r');
-        $linea = fgets($fichero);
-        while ($linea !== false){
-            $primeras_comillas = strpos($linea,'"',0);
-            $segundas_comillas = strpos($linea,'"',$primeras_comillas + 1);
-            if (is_int($primeras_comillas) && is_int($segundas_comillas)){
-                $longitud = $segundas_comillas - $primeras_comillas + 1;
-                $nuevo_argumento = substr($linea,$primeras_comillas,$longitud);
-                $arguments[] = str_replace('"',"'",$nuevo_argumento);
-            }
+        if (file_exists($folder.'\\'.$file_name)){
+            $fichero = fopen($folder.'\\'.$file_name,'r');
             $linea = fgets($fichero);
+            while ($linea !== false){
+                $primeras_comillas = strpos($linea,'"',0);
+                $segundas_comillas = strpos($linea,'"',$primeras_comillas + 1);
+                if (is_int($primeras_comillas) && is_int($segundas_comillas)){
+                    $longitud = $segundas_comillas - $primeras_comillas + 1;
+                    $nuevo_argumento = substr($linea,$primeras_comillas,$longitud);
+                    $arguments[] = str_replace('"',"'",$nuevo_argumento);
+                }
+                $linea = fgets($fichero);
+            }
         }
 
         return $arguments;
@@ -51,30 +60,46 @@ class Compilar{
 
 
 
-    function create_translation_file($folder,$text_domain,$arguments){
+    function create_translation_file($folder){
+
+        $arguments = $this->get_translation_args($folder);
+
+        $arguments = $this->get_new_arguments_folder($folder,$arguments);
+
+
         // file name for translations file.
-        $words = explode('-',$text_domain);
-        $file_name = $words[0].'-'.$this->nombre_base.'-translations.php';
-        $function_name = $words[0].'_'.$this->nombre_base;
-        $function_name = $function_name.'_translations';
-        $fichero = fopen($folder.'\\'.$file_name,'w');
+        $file_name = $this->text_domain.'-'.$this->nombre_base.'-translations.php';
+        $words = explode('-',$this->text_domain);
+        $function_name ='';
+        foreach($words as $word){
+            if ($function_name == '')
+                $function_name = $word;
+            else $function_name = $function_name.'_'.$word;
+        }
+        $function_name = $function_name.'_'.$this->nombre_base.'_translations';
+        $fichero = fopen($folder.'\\inc\\'.$file_name,'w');
         fputs($fichero,'<?php'.PHP_EOL);
         fputs($fichero,PHP_EOL);
         fputs($fichero,'function '.$function_name.'(){'.PHP_EOL);
+        fputs($fichero,'ob_start();'.PHP_EOL); 
         fputs($fichero,'?>'.PHP_EOL);
         fputs($fichero,'{'.PHP_EOL);
         foreach($arguments as $argument){
-            $cadena = "                    ".$argument.":'<?php echo __(".$argument.",'".$text_domain."'); ?>',".PHP_EOL;
+            $cadena = "                    ".$argument.":'<?php echo __(".$argument.",'".$this->text_domain."'); ?>',".PHP_EOL;
             fputs($fichero,str_replace("'",'"',$cadena));
         }
         fputs($fichero,'                }'.PHP_EOL);
         fputs($fichero,'<?php'.PHP_EOL);
+        fputs($fichero,'$output = ob_get_contents();'.PHP_EOL); 
+        fputs($fichero,'ob_end_clean();'.PHP_EOL); 
+        fputs($fichero,'return $output;'.PHP_EOL); 
         fputs($fichero,PHP_EOL);
         fputs($fichero,'}'.PHP_EOL);
         fclose($fichero);
             
         // file name for version file.
-        $version_name = $text_domain.'-version.php';
+    /*
+        $version_name = $this->text_domain.'-version.php';
         $version = 1;
         if (file_exists($folder.'\\'.$version_name)){
             $dependencies = include_once($folder.'\\'.$version_name);
@@ -85,7 +110,7 @@ class Compilar{
         $fichero = fopen($folder.'\\'.$version_name,'w');
         fputs($fichero,"<?php return array('version' => '".$version."');".PHP_EOL);
         fclose($fichero);
-
+    */
     }
 
     function get_new_arguments_folder($folder,$arguments = []){
@@ -93,20 +118,23 @@ class Compilar{
         if (is_dir($folder)){
             $manejador = opendir($folder);
             while (false !== ($file = readdir($manejador))){
-                if ( str_ends_with($file,'.jsx')){
-                    echo 'analising file :'.$file.PHP_EOL;
-                    $new_arguments = $this->get_new_arguments_file($folder.'\\'.$file,$new_arguments);
+                echo 'Directorio o fichero : '.$file.PHP_EOL;
+                if ($file !== 'node_modules')
+                    if ( str_ends_with($file,'.jsx')){
+                        echo 'analising file :'.$file.PHP_EOL;
+                        $new_arguments = $this->get_new_arguments_file($folder.'\\'.$file,$new_arguments);
 
-                } else {
-                    if (is_dir($folder.'\\'.$file) && ($file != '.') && ($file != '..')){
-                        echo 'reading folder :'.$file.PHP_EOL;                    
-                        $new_arguments = $this->get_new_arguments_folder($folder.'\\'.$file,$new_arguments); 
-                    } else echo 'omiting :'.$file.PHP_EOL;
-                }
+                    } else {
+                        if (is_dir($folder.'\\'.$file) && ($file != '.') && ($file != '..')){
+                            echo 'reading folder :'.$file.PHP_EOL;                    
+                            $new_arguments = $this->get_new_arguments_folder($folder.'\\'.$file,$new_arguments); 
+                        } else echo 'omiting :'.$file.PHP_EOL;
+                    }
             }
         }
         return $new_arguments;
     }
+
     function get_new_arguments_file($file,$arguments){
         $new_arguments = $arguments;
 

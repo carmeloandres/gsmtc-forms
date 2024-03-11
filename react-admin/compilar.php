@@ -63,8 +63,9 @@ while (false !== ($file = readdir($manejador))){
 }
 
 $herramientas->increment_version();
-/*
 
+
+// Soporte para traducciones
 // Listando los ficheros a escanear dentro del directorio de react
 $dir_react = (pathinfo(__FILE__)['dirname']);
 $dir_plugin = dirname($dir_react);
@@ -87,13 +88,12 @@ while (false !== ($file = readdir($manejador))){
     }
 }
 
-//$arguments = $herramientas->get_translation_args($dir_plugin.'\\inc',$text_domain);
-$arguments = array();
-$arguments = $herramientas->get_new_arguments_folder($dir_react.'\\src',$arguments);
+//$arguments = $herramientas->get_translation_args($dir_plugin.'\\inc');
+//$arguments = array();
+//arguments = $herramientas->get_new_arguments_folder($dir_react.'\\src',$arguments);
 
-//echo '$arguments'.PHP_EOL;
-//var_dump($arguments);
+// echo '$arguments'.PHP_EOL;
+// var_dump($arguments);
 
-$herramientas->create_translation_file($dir_plugin.'\\inc',$text_domain,$arguments);  
+$herramientas->create_translation_file($dir_plugin);  
 
-*/
