@@ -28,7 +28,7 @@ export const Pagination = ({
         <div className='gsmtc-admin-pagination'>
             <button onClick={onClickButton} disabled={ firstDisabled }>First</button>
             <button onClick={onClickButton} disabled={ firstDisabled }>Previous</button>
-            <span>{current}</span>
+            <span> Page {current}</span>
             <button onClick={onClickButton} disabled={ lastDisabled }>Next</button>
             <button onClick={onClickButton} disabled={ lastDisabled }>Last</button>
         </div>

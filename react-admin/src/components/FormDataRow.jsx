@@ -4,7 +4,7 @@ import { __ } from "../helpers";
 //import './FormDataRow.scss';
 
 export const FormDataRow = ({
-    idSubmit, idForm, formName, date, email, onClick
+    idSubmit, idForm, formName, date, email, onDelete
   }) => {
 
     // Referencia las credenciales de la api
@@ -14,7 +14,7 @@ export const FormDataRow = ({
     // y el nonce de validación para las peticiones api.
     const { restUrl, nonce, gsmtcForms } = api;
 
-    const [ buttonContent, setButtonContent] = useState('+');
+    const [ buttonContent, setButtonContent] = useState('Open');
     const [ dataLoad, setDataload ] = useState(false);
   
     const [ data,setData ] = useState([]);
@@ -41,35 +41,50 @@ export const FormDataRow = ({
       // recive the resquest from api and obtain the json data
       if (resp.ok){
         let result = await resp.json();
-        setRows( result );
+        setData( result );
+        setDataload( true );
     }									
 
     }
     const onClickButton = (event) =>{
       event.preventDefault();
-        if (buttonContent == '+')
-            setButtonContent('-');
-        else setButtonContent('+');
-     // onClick(event);
+        if (buttonContent == 'Open')
+            setButtonContent('Close');
+        else setButtonContent('Open');
+        if ( ! dataLoad )
+          loadData();
     }
-      
+
+    const onClickDeleteButton = (event) =>{
+      event.preventDefault();
+      let result = window.confirm(__('are you sure od deleting the data form submission',gsmtcForms));
+      if (result == true)
+        onDelete(idSubmit);
+    }
+
     return (
       <div className='gsmtc-forms-admin-accordion'>
         <div className='gsmtc-forms-admin-accordion-submit'>
-            <div>{formName}</div>
-            <div>{date}</div>
-            <div>{email}</div>
-            <div>
+            <div className='gsmtc-forms-admin-cell'>{formName}</div>
+            <div className='gsmtc-forms-admin-cell'>{date}</div>
+            <div className='gsmtc-forms-admin-cell'>{email}</div>
+            <div className='gsmtc-forms-admin-cell'>
               <form>
                 <input type="hidden" name="idSubmit" value={idSubmit} />
                 <input type="hidden" name="idForm" value={idForm} />
                 <button type="submit" onClick={onClickButton}>{buttonContent}</button>
+                <button type="submit" onClick={onClickDeleteButton}>Delete data</button>
               </form>
             </div>
         </div>
-        { ((buttonContent == '-')? true : false) &&
+        { ((buttonContent == 'Close')? true : false) &&
         <div className='gsmtc-forms-admin-accordion-content'>
-          <div>{__('Please wait loading content...',gsmtcForms)}</div>
+          { ( ! dataLoad ) &&
+              <div>{__('Please wait loading content...',gsmtcForms)}</div> }
+          { ( dataLoad ) &&
+            <div>Mostrando la informacion de los datos del formulario</div>
+
+          }
         </div>
         }
       </div>

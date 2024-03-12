@@ -90,8 +90,11 @@ class Compilar{
         }
         fputs($fichero,'                }'.PHP_EOL);
         fputs($fichero,'<?php'.PHP_EOL);
+        fputs($fichero,PHP_EOL);
         fputs($fichero,'$output = ob_get_contents();'.PHP_EOL); 
+        fputs($fichero,PHP_EOL);
         fputs($fichero,'ob_end_clean();'.PHP_EOL); 
+        fputs($fichero,PHP_EOL);
         fputs($fichero,'return $output;'.PHP_EOL); 
         fputs($fichero,PHP_EOL);
         fputs($fichero,'}'.PHP_EOL);

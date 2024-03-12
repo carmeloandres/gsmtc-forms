@@ -1,9 +1,98 @@
-.gsmtc-forms-admin-accordion{
-
-  .gsmtc-forms-admin-accordion-submit{
-    display: flex;
-    flex-flow: row;
-    padding:1px;
+.gsmtc-forms-admin-content{
+  background-color:aqua;
+  box-sizing: border-box;
+  padding: 1px;
+  width:100%;
+  .gsmtc-forms-admin-title{
+    background-color: chartreuse;
+    margin: 1px;
+    padding: 1px;
+    text-align: center;
   }
+  .gsmtc-forms-admin-accordion{
+    margin:1px;
+    padding: 1px;
+    .gsmtc-forms-admin-accordion-submit{
+      display: flex;
+      flex-flow: row;
+      justify-content: space-between;
+      margin: 1px;
+      padding:1px;
+      .gsmtc-forms-admin-cell{
+        text-align: center;
+        background-color: aliceblue;
+        box-sizing: border-box;
+        padding: 1px;
+        margin: 1px;
+        width: 25%;
+        button{
+          margin:0 1px;
+        }
+      }
+    }
+    .gsmtc-forms-admin-accordion-content{
+      margin: 1px;
+      padding: 1px;
+      text-align: center;
+    }
+  }
+  .display-none{
+    display: none;
+  }
+  .display-flex{
+    box-sizing: border-box;
+    display: flex;
+    margin: 1px;
+    padding: 1px;
+    width: 100%;
+    .warning{
+      background-color: antiquewhite;
+      border: 1px solid yellow;
+      border-radius: 5px;
+      box-sizing: border-box;
+      margin: 1px;
+      margin: 1px;
+      text-align: center;
+      width:100%;
+    }
+    .success{
+      background-color: antiquewhite;
+      border: 1px solid green;
+      border-radius: 5px;
+      box-sizing: border-box;
+      margin: 1px;
+      margin: 1px;
+      text-align: center;
+      width:100%;
+    }
+    .error{
+      background-color: antiquewhite;
+      border: 1px solid red;
+      border-radius: 5px;
+      box-sizing: border-box;
+      margin: 1px;
+      margin: 1px;
+      text-align: center;
+      width:100%;
+    }
 
+  }
+  .gsmtc-forms-paginacion{
+    display:flex;
+    justify-content: center;
+    margin: 1px;
+    padding: 1px;
+    width:100%;
+    .gsmtc-admin-pagination{
+      display: flex;
+      flex-flow: row;
+      justify-content: center;
+      margin: 1px;
+      padding:1px;
+      max-width: 50%;
+      button{
+        margin: 0 5px;
+      }
+    }
+  }
 }

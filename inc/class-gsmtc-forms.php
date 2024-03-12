@@ -11,10 +11,10 @@
 
 class Gsmtc_Forms extends Gsmtc_Forms_Translations{
 
-    public $plugin_prefix;
-    public $table_name_forms;
-    public $table_name_data_forms;
-    public $gsmtcForms;
+//    public $plugin_prefix;
+//    public $table_name_forms;
+//    public $table_name_data_forms;
+//    public $gsmtcForms;
 
        
     function __construct()
@@ -27,8 +27,8 @@ class Gsmtc_Forms extends Gsmtc_Forms_Translations{
         $this->table_name_forms = $wpdb->prefix.$this->plugin_prefix.'forms';
         $this->table_name_data_forms = $wpdb->prefix.$this->plugin_prefix.'forms_data';
 */
-        $this->gsmtcForms = gsmtc_forms_admin_translations();
-        error_log ('function __contruct - $this->gsmtcForms : '.var_export($this->gsmtcForms,true));
+//        $this->gsmtcForms = gsmtc_forms_admin_translations();
+//        error_log ('function __contruct - $this->gsmtcForms : '.var_export($this->gsmtcForms,true));
 
         add_action('init',array($this,'init'));
         add_filter('block_categories_all',array($this,'add_block_categories'));

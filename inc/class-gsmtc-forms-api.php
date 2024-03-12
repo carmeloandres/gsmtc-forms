@@ -150,8 +150,8 @@ class Gsmtc_Forms_Api extends Gsmtc_forms_Translations{
 					case 'get_data_page':
 						$result = $this->get_data_page($params);
 						break;
-					case 'update_customer' :
-						$result = $this->update_customer($params);
+					case 'delete_submission' :
+						$result = $this->delete_submission($params);
 						break;										
 					}
 			} 
@@ -161,6 +161,37 @@ class Gsmtc_Forms_Api extends Gsmtc_forms_Translations{
         echo json_encode($result);
 		exit();
 	}
+
+    /**
+     * Metodo: delete_subbmision
+     *  
+     * Borra los registros relacionados con el envio de un formulario, tanto de la tabla de datos
+     * como de la tabla de envio.
+     *
+     * @param array $params La información de la petición.     
+     * @return int/bool Devuelve el número de registros eliminados, 1 o false en caso de error.
+     */
+    function delete_submission($params){
+        global $wpdb;
+
+        $result = false;
+
+        if (isset($params['id'])){
+
+            $id = $params['id'];
+            $condition = array(
+                'idsubmit' => $id,
+            );
+            $result = $wpdb->delete($this->table_name_data_forms,$condition);
+            if ($result !== false){
+                $condition = array(
+                    'id' => $id,
+                );
+                $result = $wpdb->delete($this->table_name_submited_forms,$condition);
+            }
+        }
+        return $result;
+    }
 
     /**
      * Metodo: get_data_page
@@ -180,7 +211,7 @@ class Gsmtc_Forms_Api extends Gsmtc_forms_Translations{
             $init = ($page - 1 ) * $this->rows_per_page;
             $query ="SELECT * FROM ".$this->table_name_submited_forms." ORDER BY id DESC LIMIT ".$this->rows_per_page." OFFSET ".$init;
             $result = $wpdb->get_results($query,ARRAY_A);
-            error_log ('get_data_page - $result : '.var_export($result,true));
+//            error_log ('get_data_page - $result : '.var_export($result,true));
 
         }
 
