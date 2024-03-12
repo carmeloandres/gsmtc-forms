@@ -89,8 +89,15 @@ export const GsmtcFormsAdminApp = () => {
         if (resp.ok){
           let result = await resp.json();
           if ( result !== false){
+            console.log('Result : ',result);
             setAlert({class:'display-flex',type:'success',content:__('The data has been deleted successfull',gsmtcForms)})
-            getPage( page );
+            setLastPage(result);
+            if (page <= result)
+              getPage( page );
+            else{
+              setPage(result);
+              getPage(result);
+            } 
             setTimeout(() => {setAlert({class:'display-none',type:'',content:''})},5000);
           } else setAlert({class:'display-flex',type:'error',content:__('The data has not been deleted',gsmtcForms)})
 
@@ -100,7 +107,7 @@ export const GsmtcFormsAdminApp = () => {
     <>
   <ApiContext.Provider value={ { api, setApi }} >
       <div className='gsmtc-forms-admin-content'>
-      <h1 className='gsmtc-forms-admin-title'>Gsmtc forms Admin</h1>
+      <h1 className='gsmtc-forms-admin-title'>{__('Forms submission data',gsmtcForms)}</h1>
       <FormDataHeader />
 
 

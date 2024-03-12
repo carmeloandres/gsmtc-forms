@@ -188,6 +188,8 @@ class Gsmtc_Forms_Api extends Gsmtc_forms_Translations{
                     'id' => $id,
                 );
                 $result = $wpdb->delete($this->table_name_submited_forms,$condition);
+                if ($result !== false)
+                    $result = $this->get_last_page();
             }
         }
         return $result;

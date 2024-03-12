@@ -57,7 +57,7 @@ export const FormDataRow = ({
 
     const onClickDeleteButton = (event) =>{
       event.preventDefault();
-      let result = window.confirm(__('are you sure od deleting the data form submission',gsmtcForms));
+      let result = window.confirm(__('are you sure to deleting the data form submission',gsmtcForms));
       if (result == true)
         onDelete(idSubmit);
     }
