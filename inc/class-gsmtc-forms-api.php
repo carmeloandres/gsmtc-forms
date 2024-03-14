@@ -153,7 +153,10 @@ class Gsmtc_Forms_Api extends Gsmtc_forms_Translations{
 					case 'delete_submission' :
 						$result = $this->delete_submission($params);
 						break;										
-					}
+                    case 'get_data_submit' :
+                        $result = $this->get_data_submit($params);
+                        break;										
+                }
 			} 
 		}
         error_log ('Resultado del bucle, $result: '.var_export($result,true));
@@ -161,6 +164,32 @@ class Gsmtc_Forms_Api extends Gsmtc_forms_Translations{
         echo json_encode($result);
 		exit();
 	}
+
+    /**
+     * Metodo: get_data_submit
+     *  
+     * Obtiene el contenido de los correspondientes inputs del envio de un determinado
+     * formulario, identificado por el idsubmit.
+     *
+     * @param array $params La información de la petición.     
+     * @return array Devuelve el tipo, el nombre y el contenido de los inputs del envio de un formulario.
+     */
+    function get_data_submit($params){
+        global $wpdb;
+
+        $result = array();
+
+        if (isset($params['idSubmit']) && is_int(intval($params['idSubmit']))){
+            
+            $query = "SELECT typedata, namedata, contentdata FROM ".$this->table_name_data_forms." WHERE idsubmit = ".intval($params['idSubmit']);
+            $result = $wpdb->get_results($query,ARRAY_A);
+            
+            if ($result === NULL)
+                $result = array();
+        }
+
+        return $result;
+    }
 
     /**
      * Metodo: delete_subbmision

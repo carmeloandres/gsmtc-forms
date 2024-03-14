@@ -1,3 +1,5 @@
+export * from './DataEmail'
+export * from './DataText'
 export * from './FormDataHeader'
 export * from './FormDataRow'
 export * from './Pagination'

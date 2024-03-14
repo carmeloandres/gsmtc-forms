@@ -1,7 +1,7 @@
-import { useContext, useState, useEffect } from 'react';
+import { useContext, useState, useEffect, useRef } from 'react';
 import { ApiContext } from '../ApiContext';
+import { DataEmail, DataText } from './';
 import { __ } from "../helpers";
-//import './FormDataRow.scss';
 
 export const FormDataRow = ({
     idSubmit, idForm, formName, date, email, onDelete
@@ -19,7 +19,26 @@ export const FormDataRow = ({
   
     const [ data,setData ] = useState([]);
 
+    // creamos una referencia a la tabla utilizando el hook useRef
+		const tableRef = useRef();
+
+
+    useEffect(()=> {
+      if (tableRef.current !== undefined){
+        let rowsLength = tableRef.current.rows.length;
+//        tableRef.current.rows.forEach( row => {
+  //        console.log('Row cells length :', row.cells.length);
+    //    })
+        
+        console.log('tableRef : ',tableRef.current.rows.length);
+
+      }
+      else console.log('Data changes, but tableRef == undefined');
+    },[data])
+
     const loadData = async() => {
+
+      console.log('Data load executed');
 
       // create the header with the nonce token
       const headers = new Headers({
@@ -43,6 +62,7 @@ export const FormDataRow = ({
         let result = await resp.json();
         setData( result );
         setDataload( true );
+        console.log('Data load : ', result);
     }									
 
     }
@@ -82,7 +102,41 @@ export const FormDataRow = ({
           { ( ! dataLoad ) &&
               <div>{__('Please wait loading content...',gsmtcForms)}</div> }
           { ( dataLoad ) &&
-            <div>Mostrando la informacion de los datos del formulario</div>
+            <table
+              ref={tableRef}
+            >        
+              <tr className='gsmtc-forms-data-row'>
+                <th className='gsmtc-forms-data-type'>{__('Type',gsmtcForms)}</th>
+                <th className='gsmtc-forms-data-name'>{__('Name',gsmtcForms)}</th>
+                <th className='gsmtc-forms-data-content'>{__('Content',gsmtcForms)}</th>
+              </tr>
+              {data.map( row => {
+                  switch(row.typedata){
+                    case 'text':
+                      return(
+                              <DataText
+                                name={row.namedata} 
+                                content={row.contentdata}
+                              />
+
+                      );
+                    case 'email':
+                    case 'email_main':
+                      return(
+                             <DataEmail 
+                              type={row.typedata}
+                              name={row.namedata}
+                              content={row.contentdata}
+                             /> 
+                      )
+
+                  }
+                
+              })
+            
+
+              }
+          </table>
 
           }
         </div>

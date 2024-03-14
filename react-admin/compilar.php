@@ -77,7 +77,7 @@ echo '$list_of_react_files :'.PHP_EOL;
 var_dump($list_of_react_files);
 echo '$list_of_plugin_files :'.PHP_EOL;
 var_dump($list_of_plugin_files);
-
+/*
 // obtengo el manejador del directorio origen
 $manejador = opendir($dir_react.'\\src');
 // leo cada fichero del directorio origen
@@ -87,7 +87,7 @@ while (false !== ($file = readdir($manejador))){
         echo $file.PHP_EOL;
     }
 }
-
+*/
 //$arguments = $herramientas->get_translation_args($dir_plugin.'\\inc');
 //$arguments = array();
 //arguments = $herramientas->get_new_arguments_folder($dir_react.'\\src',$arguments);
