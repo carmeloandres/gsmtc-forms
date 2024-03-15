@@ -72,12 +72,14 @@
             display: flex;
             flex-flow: row;    
             justify-content:flex-end;
+            padding: 1px;
             .name{
-              background-color: aliceblue;
-              padding-right: 5px;
+              padding-right: 7px;
             }
             .value{
-              padding-top: 5px;
+              margin: 3px;
+              padding: 5px;
+              vertical-align: middle;
             }
           }
         }

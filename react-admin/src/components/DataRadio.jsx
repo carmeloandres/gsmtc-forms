@@ -21,7 +21,7 @@ export const DataRadio = ({
                     return(
                         <div className='radio'>
                             <label className='name'for={name+'_'+element.radioname}>{element.radioname}</label>
-                            <input name={name+'_'+element.radioname} type="radio" checked={(element.radiovalue == 'checked')? true : false} disabled />                            
+                            <input className='value' id={name+'_'+element.radioname} type="radio" checked={(element.radiovalue == 'checked')? true : false} disabled />                            
                         </div>
                     )
                 })}
