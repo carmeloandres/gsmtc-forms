@@ -24,6 +24,7 @@ export const FormDataRow = ({
 
     // This function is to adjust all the width cell to maxwidth
     useEffect(()=> {
+      if (buttonContent == 'Close')
       if (tableRef.current !== undefined){
         let rowsLength = tableRef.current.rows.length;
         if (rowsLength >= 1){
@@ -43,7 +44,7 @@ export const FormDataRow = ({
         } else console.log ('No rows in table');
       }
       else console.log('Data changes, but tableRef == undefined');
-    },[data]);
+    },[data,buttonContent]);
 
     const loadData = async() => {
 

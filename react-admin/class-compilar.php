@@ -129,9 +129,9 @@ class Compilar{
 
                     } else {
                         if (is_dir($folder.'\\'.$file) && ($file != '.') && ($file != '..')){
-                            echo 'reading folder :'.$file.PHP_EOL;                    
+                            //echo 'reading folder :'.$file.PHP_EOL;                    
                             $new_arguments = $this->get_new_arguments_folder($folder.'\\'.$file,$new_arguments); 
-                        } else echo 'omiting :'.$file.PHP_EOL;
+                        } //else echo 'omiting :'.$file.PHP_EOL;
                     }
             }
         }

@@ -114,6 +114,7 @@ export const GsmtcFormsAdminApp = () => {
       {rows.map(row => {
         return(
           <FormDataRow 
+            key={row.id}
             idSubmit={row.id}
             idForm={row.idform}
             formName={row.formname}

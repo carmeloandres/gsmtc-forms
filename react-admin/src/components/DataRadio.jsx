@@ -20,8 +20,8 @@ export const DataRadio = ({
                     console.log('Element :',element);
                     return(
                         <div className='radio'>
-                            <div className='name'>{element.radioname}</div>
-                            <div className='value'>{element.radiovalue}</div>                                               
+                            <label className='name'for={name+'_'+element.radioname}>{element.radioname}</label>
+                            <input name={name+'_'+element.radioname} type="radio" checked={(element.radiovalue == 'checked')? true : false} disabled />                            
                         </div>
                     )
                 })}

@@ -124,9 +124,9 @@ const gsmtcFormsFormSubmit = async (event) => {
         switch (element.type) {
             case "checkbox":
                 if (element.checked)
-                    field = [element.type, element.name, 'on']
+                    field = [element.type, element.name, 'checked']
                 else
-                    field = [element.type, element.name, 'off']
+                    field = [element.type, element.name, '']
                 break;
             case "email":
                 attribute = element.getAttribute('data-main-email');
@@ -134,9 +134,9 @@ const gsmtcFormsFormSubmit = async (event) => {
               break;
             case "radio":
                 if ((element.checked))
-                    field = [element.type, element.name, element.value + '_on']
+                    field = [element.type, element.name, element.value + '_checked']
                 else
-                    field = [element.type, element.name, element.value + '_off']
+                    field = [element.type, element.name, element.value + '_']
                 break;
             default:
                 field = [element.type, element.name, element.value]

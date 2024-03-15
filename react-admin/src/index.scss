@@ -71,14 +71,13 @@
           .radio{
             display: flex;
             flex-flow: row;    
-            justify-content: space-around;
+            justify-content:flex-end;
             .name{
-              margin:0 1px;
-              padding:0 5px;
+              background-color: aliceblue;
+              padding-right: 5px;
             }
             .value{
-              margin:0 1px;
-              padding:0 5px;
+              padding-top: 5px;
             }
           }
         }

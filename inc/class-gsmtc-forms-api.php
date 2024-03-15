@@ -450,6 +450,11 @@ error_log ('Se ha ejecutado "submited_form", $submited_form: '.var_export($submi
                         'radioname' => $words[0],
                         'radiovalue' => $words[1],
                     );
+                else $result[] = array(
+                    'radioname' => $words[0],
+                    'radiovalue' => '',
+
+                );
             }
         }
         return $result;

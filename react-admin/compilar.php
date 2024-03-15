@@ -71,11 +71,11 @@ $dir_react = (pathinfo(__FILE__)['dirname']);
 $dir_plugin = dirname($dir_react);
 $list_of_react_files = scandir($dir_react.'\\src');
 $list_of_plugin_files = scandir($dir_plugin.'\\inc');
-echo '$dir_react :'.$dir_react.PHP_EOL;
-echo '$dir_plugin :'.$dir_plugin.PHP_EOL;
-echo '$list_of_react_files :'.PHP_EOL;
+//echo '$dir_react :'.$dir_react.PHP_EOL;
+//echo '$dir_plugin :'.$dir_plugin.PHP_EOL;
+//echo '$list_of_react_files :'.PHP_EOL;
 var_dump($list_of_react_files);
-echo '$list_of_plugin_files :'.PHP_EOL;
+//echo '$list_of_plugin_files :'.PHP_EOL;
 var_dump($list_of_plugin_files);
 /*
 // obtengo el manejador del directorio origen
