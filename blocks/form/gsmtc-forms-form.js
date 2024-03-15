@@ -134,9 +134,9 @@ const gsmtcFormsFormSubmit = async (event) => {
               break;
             case "radio":
                 if ((element.checked))
-                    field = [element.type, element.name+'_'+element.value, 'on']
+                    field = [element.type, element.name, element.value + '_on']
                 else
-                    field = [element.type, element.name+'_'+element.value, 'off']
+                    field = [element.type, element.name, element.value + '_off']
                 break;
             default:
                 field = [element.type, element.name, element.value]

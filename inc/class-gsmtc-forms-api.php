@@ -177,18 +177,23 @@ class Gsmtc_Forms_Api extends Gsmtc_forms_Translations{
     function get_data_submit($params){
         global $wpdb;
 
-        $result = array();
+        $results = array();
 
         if (isset($params['idSubmit']) && is_int(intval($params['idSubmit']))){
             
             $query = "SELECT typedata, namedata, contentdata FROM ".$this->table_name_data_forms." WHERE idsubmit = ".intval($params['idSubmit']);
-            $result = $wpdb->get_results($query,ARRAY_A);
-            
-            if ($result === NULL)
-                $result = array();
+            $results = $wpdb->get_results($query,ARRAY_A);
+           
+            if ($results !== NULL){
+                $counter = 0;
+                for ($counter = 0 ; $counter < count($results) ; $counter++){
+                    if (isset($results[$counter]['typedata']) && $results[$counter]['typedata'] == 'radio')
+                        $results[$counter]['contentdata'] = unserialize($results[$counter]['contentdata']);
+                }
+            } else $results = array();
         }
 
-        return $result;
+        return $results;
     }
 
     /**
@@ -381,6 +386,8 @@ error_log ('Se ha ejecutado "submited_form", $submited_form: '.var_export($submi
 
         global $wpdb;
 
+        $radio_inserted = array();
+
         foreach($elements as $element){
 
             $data = array(
@@ -389,37 +396,24 @@ error_log ('Se ha ejecutado "submited_form", $submited_form: '.var_export($submi
                 'namedata' => sanitize_text_field($element[1]),
                 'contentdata' => sanitize_text_field($element[2])                    
             );
-            switch($element[0]){
-                case 'checkbox':
-                    $data = array(
-                        'idsubmit' => $id,
-                        'typedata' => 'checkbox',
-                        'namedata' => sanitize_text_field($element[1]),
-                        'contentdata' => sanitize_text_field($element[2])                    
-                    );
-                    break;
-                case 'text':
-                    $data = array(
-                        'idsubmit' => $id,
-                        'typedata' => 'text',
-                        'namedata' => sanitize_text_field($element[1]),
-                        'contentdata' => sanitize_text_field($element[2])                    
-                    );
-                    break;
+            switch($data['typedata']){
                 case 'email':
-                    $typedata = 'email';
                     if (isset($element[3]) && ($element[3] == 'main'))
-                        $typedata = 'email_main';
-                    $data = array(
-                        'idsubmit' => $id,
-                        'typedata' => $typedata,
-                        'namedata' => sanitize_text_field($element[1]),
-                        'contentdata' => sanitize_email($element[2])                    
-                    );
+                        $data['typedata'] = 'email_main';
+                    else $data['typedata'] = 'email';
                     break;
-            }
+                case 'radio':
+                    if ( ! in_array($data['namedata'],$radio_inserted)){
+                        $content = $this->get_radio_content($data['namedata'],$elements);
+                        error_log('Insert elements: $content'.var_export($content,true).PHP_EOL);
 
-            $result = $wpdb->insert($this->table_name_data_forms,$data);
+                        if ( ! empty($content))
+                            $radio_inserted[] = $data['namedata'];
+                        $data['contentdata'] = serialize($content);
+                    } else $data = array();
+            }
+            if ( ! empty($data))
+                $result = $wpdb->insert($this->table_name_data_forms,$data);
 
             error_log ('Se ha ejecutado "insert_elements", $data: '.var_export($data,true).' , $result: '.var_export($result,true).PHP_EOL);
 
@@ -438,6 +432,29 @@ error_log ('Se ha ejecutado "submited_form", $submited_form: '.var_export($submi
 
     }
 
+    /**
+	 * get_last_page
+	 * 
+	 * Method to manage the access permissions to the endpoints
+	 * only administrators can access
+	 *
+	 * @return void
+	 */
+	function get_radio_content($radio_name,$elements){
+        $result = array();
+        foreach($elements as $element){
+            if ((sanitize_text_field($element[0]) == 'radio') && ((sanitize_text_field($element[1]) == $radio_name))){
+                $words = explode('_',(sanitize_text_field($element[2])));
+                if (count($words) >= 2)
+                    $result[] = array(
+                        'radioname' => $words[0],
+                        'radiovalue' => $words[1],
+                    );
+            }
+        }
+        return $result;
+
+    }
 
     /**
 	 * get_last_page

@@ -6,6 +6,7 @@ ob_start();
 {
                     "Email":"<?php echo __("Email","gsmtc-forms"); ?>",
                     "Main email":"<?php echo __("Main email","gsmtc-forms"); ?>",
+                    "Radio":"<?php echo __("Radio","gsmtc-forms"); ?>",
                     "Text":"<?php echo __("Text","gsmtc-forms"); ?>",
                     "Form name":"<?php echo __("Form name","gsmtc-forms"); ?>",
                     "Date of submission form":"<?php echo __("Date of submission form","gsmtc-forms"); ?>",

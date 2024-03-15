@@ -34,10 +34,10 @@
       margin: 1px;
       padding: 1px;
       text-align: center;
-      table {
-        border-collapse: collapse;
-        width: 100%;
-    }
+//      table {
+  //      border-collapse: collapse;
+    //    width: 100%;
+   // }
     
     .gsmtc-forms-data-row{
       background-color: darkorange;
@@ -53,12 +53,12 @@
         text-align: center;
         margin: 1px;
         min-width: 100px; /* Establece aquí el ancho mínimo deseado */
-        padding: 1px;
+        padding: 1px 5px;
         }
         .gsmtc-forms-data-name{
           background-color: fuchsia;
           box-sizing: border-box;
-          text-align: left;
+          text-align: center;
           margin: 1px;
           padding: 1px 5px;
         }
@@ -67,7 +67,20 @@
           box-sizing: border-box;
           text-align: center;
           margin: 1px;
-          padding: 1px;
+          padding: 1px 5px;
+          .radio{
+            display: flex;
+            flex-flow: row;    
+            justify-content: space-around;
+            .name{
+              margin:0 1px;
+              padding:0 5px;
+            }
+            .value{
+              margin:0 1px;
+              padding:0 5px;
+            }
+          }
         }
 
       }

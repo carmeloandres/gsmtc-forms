@@ -1,6 +1,6 @@
 import { useContext, useState, useEffect, useRef } from 'react';
 import { ApiContext } from '../ApiContext';
-import { DataEmail, DataText } from './';
+import { DataEmail, DataRadio, DataText } from './';
 import { __ } from "../helpers";
 
 export const FormDataRow = ({
@@ -22,19 +22,28 @@ export const FormDataRow = ({
     // creamos una referencia a la tabla utilizando el hook useRef
 		const tableRef = useRef();
 
-
+    // This function is to adjust all the width cell to maxwidth
     useEffect(()=> {
       if (tableRef.current !== undefined){
         let rowsLength = tableRef.current.rows.length;
-//        tableRef.current.rows.forEach( row => {
-  //        console.log('Row cells length :', row.cells.length);
-    //    })
-        
-        console.log('tableRef : ',tableRef.current.rows.length);
-
+        if (rowsLength >= 1){
+          let cellsLength = tableRef.current.rows[0].cells.length;
+          for (let cells = 0 ; cells < cellsLength ; cells++){
+            let maxWidth = 0;            
+            for (let rows = 0 ; rows < rowsLength; rows++){
+              let cell = tableRef.current.rows[rows].cells[cells];
+              let cellWidth = cell.clientWidth; 
+              if (cellWidth > maxWidth) {
+                  maxWidth = cellWidth;
+              }              
+            }
+            for (let rows = 0; rows < rowsLength ; rows++)
+              tableRef.current.rows[rows].cells[cells].style.width = maxWidth + 'px';
+          }
+        } else console.log ('No rows in table');
       }
       else console.log('Data changes, but tableRef == undefined');
-    },[data])
+    },[data]);
 
     const loadData = async() => {
 
@@ -118,7 +127,6 @@ export const FormDataRow = ({
                                 name={row.namedata} 
                                 content={row.contentdata}
                               />
-
                       );
                     case 'email':
                     case 'email_main':
@@ -128,7 +136,14 @@ export const FormDataRow = ({
                               name={row.namedata}
                               content={row.contentdata}
                              /> 
-                      )
+                      );
+                    case 'radio':
+                      return(
+                        <DataRadio
+                          name={row.namedata} 
+                          content={row.contentdata}
+                        />
+                      );
 
                   }
                 

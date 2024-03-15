@@ -1,4 +1,5 @@
 export * from './DataEmail'
+export * from './DataRadio'
 export * from './DataText'
 export * from './FormDataHeader'
 export * from './FormDataRow'
