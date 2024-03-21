@@ -4,7 +4,7 @@
 	"name": "gsmtc-forms/label",
 	"version": "0.1.0",
 	"title": "Form label",
-	"category": "gsmtc",
+	"category": "gsmtc-forms",
 	"icon": "sticky",
 	"textdomain": "gsmtc-forms",
 	"editorScript": "file:./build/index.js",

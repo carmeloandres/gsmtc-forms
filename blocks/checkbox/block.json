@@ -4,7 +4,7 @@
 	"name": "gsmtc-forms/checkbox",
 	"version": "0.1.0",
 	"title": "Form checkbox",
-	"category": "gsmtc",
+	"category": "gsmtc-forms",
 	"icon": "saved",
 	"textdomain": "gsmtc-forms",
 	"editorScript": "file:./build/index.js",

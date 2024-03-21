@@ -4,6 +4,7 @@ function gsmtc_forms_admin_translations(){
 ob_start();
 ?>
 {
+                    "Checkbox":"<?php echo __("Checkbox","gsmtc-forms"); ?>",
                     "Email":"<?php echo __("Email","gsmtc-forms"); ?>",
                     "Main email":"<?php echo __("Main email","gsmtc-forms"); ?>",
                     "Radio":"<?php echo __("Radio","gsmtc-forms"); ?>",

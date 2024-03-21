@@ -17,7 +17,6 @@ export const DataRadio = ({
             <td className='gsmtc-forms-data-name'>{name}</td>
             <td className='gsmtc-forms-data-content'>
                 {content.map(element => {
-                    console.log('Element :',element);
                     return(
                         <div className='radio'>
                             <label className='name'for={name+'_'+element.radioname}>{element.radioname}</label>

@@ -4,7 +4,7 @@
 	"name": "gsmtc-forms/radio",
 	"version": "0.1.0",
 	"title": "Form Radio",
-	"category": "gsmtc",
+	"category": "gsmtc-forms",
 	"icon": "marker",
 	"textdomain": "gsmtc-forms",
 	"editorScript": "file:./build/index.js",

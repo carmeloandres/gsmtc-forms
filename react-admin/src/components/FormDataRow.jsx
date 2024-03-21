@@ -1,6 +1,6 @@
 import { useContext, useState, useEffect, useRef } from 'react';
 import { ApiContext } from '../ApiContext';
-import { DataEmail, DataRadio, DataText } from './';
+import { DataCheckbox, DataEmail, DataRadio, DataText } from './';
 import { __ } from "../helpers";
 
 export const FormDataRow = ({
@@ -122,6 +122,13 @@ export const FormDataRow = ({
               </tr>
               {data.map( row => {
                   switch(row.typedata){
+                    case 'checkbox':
+                      return(
+                              <DataCheckbox
+                                name={row.namedata} 
+                                content={row.contentdata}
+                              />
+                      );
                     case 'text':
                       return(
                               <DataText

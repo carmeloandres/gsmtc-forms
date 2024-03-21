@@ -1,3 +1,4 @@
+export * from './DataCheckbox'
 export * from './DataEmail'
 export * from './DataRadio'
 export * from './DataText'
