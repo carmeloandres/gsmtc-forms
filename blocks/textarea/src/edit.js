@@ -50,7 +50,7 @@ export default function Edit({attributes, setAttributes}) {
 					</PanelBody>
 				</Panel>
 			</InspectorControls> 
-			<textarea name={name} {...blockProps}   cols={cols} placeholder={placeholder} required={required} rows={rows}>
+			<textarea {...blockProps} name={name} cols={cols} placeholder={placeholder} required={required} rows={rows}>
 			</textarea>
 		</>
 	);
