@@ -180,6 +180,21 @@ if (resp.ok){
 
 
 }
+// constructor para manejar el textarea
+function GsmtcHandlerTextarea (value){
+    this.value = value;
+    this.onInput = (event) =>{
+        if (event.data != 'a')
+            this.value = event.target.value;
+        else event.target.value = this.value;
+        console.log('onInput executed (event) : ',event);
+        console.log('onInput executed (event.data) : ',event.data);
+        console.log('onInput executed (event.target.value) : ',event.target.value);
+
+    };
+}
+
+let textareaHandlers = [];
 
 
 window.onload = function (){
@@ -212,6 +227,16 @@ window.onload = function (){
     let gsmtcInputTextareas = Array.from(document.getElementsByClassName('wp-block-gsmtc-forms-textarea'));
 
     gsmtcInputTextareas.forEach( gsmtcInputTextarea => {
+
+        let handler = new GsmtcHandlerTextarea(gsmtcInputTextarea.value);
+//        gsmtcInputTextarea.addEventListener('input',(event) => {
+//            console.log('evento : ',event);
+//        }); 
+
+        gsmtcInputTextarea.addEventListener('input',handler.onInput);
+        textareaHandlers.push(handler);
+        console.log('textareaHandlers,',textareaHandlers);
+
         gsmtcInputTextarea.setAttribute("title",GsmtcForms.inputTextareaTitle);      
     });
     
@@ -222,6 +247,9 @@ window.onload = function (){
         notices.forEach( (notice) => {
             notice.style.display = 'none';
         })
+
+    // adding handler of input textarea
+    let gsmtcInputTextarea = Array.from(document.getElementsByClassName('wp-block-gsmtc-forms-textarea'));
 
 
 }
