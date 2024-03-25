@@ -8,11 +8,10 @@ import {useBlockProps} from "@wordpress/block-editor";
 
 export default function save({attributes}) {
 
-	const { cols, name, placeholder, required, rows } = attributes
+	const { name, placeholder, required, cols, rows } = attributes
 	const blockProps = useBlockProps.save();
 
 	return (
-		<textarea {...blockProps} name={name} cols={cols} placeholder={placeholder} required={required} rows={rows} />
-		
+		<textarea {...blockProps} name={name}  placeholder={placeholder} required={required} cols={cols} rows={rows} />
 	);
 }

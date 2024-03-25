@@ -34,7 +34,7 @@ export default function Edit({attributes, setAttributes}) {
 					</PanelBody>
 				</Panel>
 			</InspectorControls> 
-			<input type="text" {...blockProps} name={name}  required={required}  placeholder={placeHolder} pattern={"^[a-zA-Z0-9\s'\"\?!]+$"} />
+			<input type="text" {...blockProps} name={name}  required={required}  placeholder={placeHolder}  />
 		</>
 	);
 }

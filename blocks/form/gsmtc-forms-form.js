@@ -28,9 +28,10 @@ const onResponseClean = (form, message) => {
     inputs.forEach(input => {
 
         switch(input.type){
-            case 'text':
             case 'email':
-                input.value = '';
+            case 'text':
+            case 'textarea':
+                    input.value = '';
                 break;
         }
     })
@@ -56,7 +57,7 @@ const onResponseHide = (form, message) => {
     
 }
 
-// función para realizar las acciones en la respuesta al submit de nothing
+// función para realizar las acciones en la respuesta al submit de fail
 const onResponseFail = (form, message) => {
     let failMessage = form.getAttribute('data-fail-message');
     if ((failMessage != null) && (failMessage != '')){
@@ -149,77 +150,86 @@ const gsmtcFormsFormSubmit = async (event) => {
               contador++;
           }
 
-//        console.log ('Elemento ',contador,' : ',element);
-//        if ((element.type == 'radio') && (element.checked))
-//        console.log ('Elemento type :',element.type,'Elemento name : ',element.name,' Elemento value : ',element.value, 'Checked');
-//    else
-//    console.log ('Elemento type :',element.type,'Elemento name : ',element.name,' Elemento value : ',element.value);
-
-})
+    })
 
 
-const resp = await fetch(GsmtcFormsAPI.restUrl,{
-    method:'POST',
-    headers: headers,
-    body:apiData
-})
+    const resp = await fetch(GsmtcFormsAPI.restUrl,{
+        method:'POST',
+        headers: headers,
+        body:apiData
+    })
 
-if (resp.ok){
-    let result = await resp.json();
-    let response = event.target.getAttribute('data-response');
-    if (response == 'nothing')
-        onResponseNothing(event.target, message);
-    if (response == 'clean')
-        onResponseClean(event.target, message); 
-    if (response == 'hide')
-        onResponseHide(event.target, message);   
-    console.log('result :',result);
-} else {
-    onResponseFail(event.target, message);
-} 
-
+    if (resp.ok){
+        let result = await resp.json();
+        let response = event.target.getAttribute('data-response');
+        if (response == 'nothing')
+            onResponseNothing(event.target, message);
+        if (response == 'clean')
+            onResponseClean(event.target, message); 
+        if (response == 'hide')
+            onResponseHide(event.target, message);   
+        console.log('result :',result);
+    } else onResponseFail(event.target, message);
+    
 
 }
-// constructor para manejar el textarea
-function GsmtcHandlerTextarea (value){
+
+// constructor to handle the validation of text and textarea
+function GsmtcHandler (value, pattern){
+    let patron = pattern;
     this.value = value;
     this.onInput = (event) =>{
-        if (event.data != 'a')
+        if (patron.test(event.target.value))
             this.value = event.target.value;
         else event.target.value = this.value;
-        console.log('onInput executed (event) : ',event);
-        console.log('onInput executed (event.data) : ',event.data);
-        console.log('onInput executed (event.target.value) : ',event.target.value);
-
+        //console.log('event.data : ', event.data);
     };
 }
 
-let textareaHandlers = [];
+// This pattern disalow the use of the next caracters: ' > <  " [ ] ^' and limit the length to 249 caracters max
+let textPattern = /^(?!.*[<>"\[\]\^])(.{0,249})$/;
+
+// This pattern disalow the use of the next caracters: ' > <  " [ ] ^' and limit the length to 999 caracters max
+let textareaPattern = /^(?!.*[<>"\[\]\^])(.{0,999})$/;
+
+// Array to store the text and the textarea handlers
+let handlers = [];
 
 
 window.onload = function (){
-    //   console.log('Datos ajax : ',datosAjax);
     
     // Adding the submit handler to all gsmtc-forms
     let formulario = Array.from(document.getElementsByClassName('wp-block-gsmtc-forms-form'));
     
     formulario.forEach( form => {form.addEventListener('submit',gsmtcFormsFormSubmit)});
 
-        console.log('formularios detectados',formulario.length);
+//        console.log('formularios detectados',formulario.length);
 
 //        console.log ('GsmtcFormsAPI : ',GsmtcFormsAPI);
 
-    // Adding translation titles to the input text
+    // Adding validation handlers to the input text
     let gsmtcInputTexts = Array.from(document.getElementsByClassName('wp-block-gsmtc-forms-text'));
 
     gsmtcInputTexts.forEach( gsmtcInputText => {
-        gsmtcInputText.setAttribute("title",GsmtcForms.inputTextTitle);
+
+        let handler = new GsmtcHandler(gsmtcInputText.value, textPattern);
+
+        gsmtcInputText.addEventListener('input',handler.onInput);
+        handlers.push(handler);
+
+//        gsmtcInputText.setAttribute("title",GsmtcForms.inputTextTitle);
     });
 
-    // Adding translation titles to the input text
+    // Adding validation handlers and translation titles to the input email
     let gsmtcInputEmails = Array.from(document.getElementsByClassName('wp-block-gsmtc-forms-email'));
-
+ 
     gsmtcInputEmails.forEach( gsmtcInputEmail => {
+        
+        let handler = new GsmtcHandler(gsmtcInputEmail.value, textPattern);
+    
+         gsmtcInputEmail.addEventListener('input',handler.onInput);
+         handlers.push(handler);
+
         gsmtcInputEmail.setAttribute("title",GsmtcForms.inputEmailTitle);
     });
 
@@ -228,29 +238,22 @@ window.onload = function (){
 
     gsmtcInputTextareas.forEach( gsmtcInputTextarea => {
 
-        let handler = new GsmtcHandlerTextarea(gsmtcInputTextarea.value);
-//        gsmtcInputTextarea.addEventListener('input',(event) => {
-//            console.log('evento : ',event);
-//        }); 
+        let handler = new GsmtcHandler(gsmtcInputTextarea.value, textareaPattern);
 
         gsmtcInputTextarea.addEventListener('input',handler.onInput);
-        textareaHandlers.push(handler);
-        console.log('textareaHandlers,',textareaHandlers);
+        handlers.push(handler);
+//        console.log('textareaHandlers,',textareaHandlers);
 
-        gsmtcInputTextarea.setAttribute("title",GsmtcForms.inputTextareaTitle);      
+//        gsmtcInputTextarea.setAttribute("title",GsmtcForms.inputTextareaTitle);      
     });
     
 
-        // oculto las notificaciones
-        let notices = Array.from(document.getElementsByClassName('wp-block-gsmtc-forms-gsmtc-noticesend'));
+    // oculto las notificaciones
+    let notices = Array.from(document.getElementsByClassName('wp-block-gsmtc-forms-gsmtc-noticesend'));
 
-        notices.forEach( (notice) => {
-            notice.style.display = 'none';
-        })
-
-    // adding handler of input textarea
-    let gsmtcInputTextarea = Array.from(document.getElementsByClassName('wp-block-gsmtc-forms-textarea'));
-
+    notices.forEach( (notice) => {
+        notice.style.display = 'none';
+    })
 
 }
 

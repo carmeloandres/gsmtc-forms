@@ -10,7 +10,7 @@ import { Panel, PanelBody, RangeControl, TextControl, ToggleControl} from  "@wor
 
 
 export default function Edit({attributes, setAttributes}) {
-	const { cols, name, placeholder, required, rows} = attributes
+	const { name, placeholder, required, cols, rows} = attributes
 	const blockProps = useBlockProps();
 	
 	return (
@@ -50,8 +50,7 @@ export default function Edit({attributes, setAttributes}) {
 					</PanelBody>
 				</Panel>
 			</InspectorControls> 
-			<textarea {...blockProps} name={name} cols={cols} placeholder={placeholder} required={required} rows={rows}>
-			</textarea>
+			<textarea {...blockProps} name={name}  placeholder={placeholder} required={required} cols={cols} rows={rows} />
 		</>
 	);
 }

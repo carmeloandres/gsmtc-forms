@@ -10,20 +10,10 @@ class Gsmtc_Forms_Translations{
     public $input_text_title;
 	public $input_email_title;
 	public $input_textarea_title;
-	public $expresion_texto;
-	public $expresion_decimal;
-	public $expresion_telefono;
-	public $expresion_telefonoextendido;
-	public $expresion_colorhexadecimal;
 
 	function __construct(){
         $this->input_text_title = __("The string must be between 0 and 249 characters and cannot contain '>' or '<'","gsmtc-forms");
 		$this->input_email_title = __("enter a valid email address","gsmtc-forms");
 		$this->input_textarea_title = __("The string must be between 0 and 249 characters and cannot contain '>' or '<'","gsmtc-forms");
-		$this->expresion_texto = '/^[\n\r0-9a-zñA-ZÑáéíóúºª ,-.:\/\(\)\']{0,200}$/';
-		$this->expresion_decimal = '/^[0-9.-]{1,7}$/';
-		$this->expresion_telefono= '/^[0-9]{1,9}$/';
-		$this->expresion_telefonoextendido = '/^[0-9+. ()-]{1,30}$/';
-		$this->expresion_colorhexadecimal = '/^#[A-Fa-f0-9]{6}$/';
     }
 }
