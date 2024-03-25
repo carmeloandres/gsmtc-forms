@@ -8,10 +8,10 @@ import {useBlockProps} from "@wordpress/block-editor";
 
 export default function save({attributes}) {
 
-	const { name, defaultValue, required, hidden } = attributes
+	const { name, required } = attributes
 	const blockProps = useBlockProps.save();
 
 	return (
-		<input type="date" {...blockProps} value={defaultValue} name={name}  required={required} hidden={hidden}/>
+		<input type="date" {...blockProps} name={name}  required={required} />
 		);
 }

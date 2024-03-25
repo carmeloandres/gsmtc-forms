@@ -10,7 +10,7 @@ import { Panel, PanelBody, TextControl, ToggleControl} from  "@wordpress/compone
 
 
 export default function Edit({attributes, setAttributes}) {
-	const { name, defaultValue, required, hidden } = attributes
+	const { name, required } = attributes
 	const blockProps = useBlockProps();
 	
 	return (
@@ -23,25 +23,15 @@ export default function Edit({attributes, setAttributes}) {
                             value={name}
                             onChange={(value) => setAttributes({ name: value })}
 	            	    />
-						<TextControl
-                            label={__('Default value','gsmtc-forms')}
-                            value={defaultValue}
-                            onChange={(value) => setAttributes({ defaultValue: value })}
-	            	    />
 						<ToggleControl
 						    label={__('Required','gsmtc-forms')}
                     		checked={required}
                     		onChange={(value) => setAttributes({ required: value })}
                 		/>
-						<ToggleControl
-						    label={__('Hidden','gsmtc-forms')}
-                    		checked={hidden}
-                    		onChange={(value) => setAttributes({ hidden: value })}
-                		/>
 					</PanelBody>
 				</Panel>
 			</InspectorControls> 
-			<input type="date" {...blockProps} name={name}  required={required} value={defaultValue} hidden={hidden}/>
+			<input type="date" {...blockProps} name={name}  required={required} />
 		</>
 	);
 }

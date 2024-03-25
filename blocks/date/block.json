@@ -1,10 +1,10 @@
 {
 	"$schema": "https://schemas.wp.org/trunk/block.json",
 	"apiVersion": 2,
-	"name": "gsmtc-forms/gsmtc-date",
+	"name": "gsmtc-forms/date",
 	"version": "0.1.0",
-	"title": "Form data",
-	"category": "gsmtc",
+	"title": "Form date",
+	"category": "gsmtc-forms",
 	"icon": "calendar-alt",
 	"textdomain": "gsmtc-forms",
 	"editorScript": "file:./build/index.js",
@@ -14,17 +14,9 @@
 		"name":{
 			"type":"string"
 		},
-		"defaultValue":{
-			"type":"string"
-		},
 		"required":{
 			"type":"boolean",
 			"default":false
-		},
-		"hidden":{
-			"type":"boolean",
-			"default":false
 		}
-
 	}
 }
